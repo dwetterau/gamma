@@ -1,6 +1,9 @@
 React = require 'react'
+{LeftNavigation} = require '../../components/navigation/left_navigation'
 
-# Client-side stuff here
+# Render the left navigation
+navigationProps = JSON.parse($('#navigation_props').html())
+React.render React.createElement(LeftNavigation, navigationProps), $('#left_navigation').get(0)
 
 # Render user forms
 if $('#create_account').length

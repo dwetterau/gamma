@@ -4,6 +4,7 @@ models = require '../models'
 
 exports.get_user_create = (req, res) ->
   res.render 'user/create_account',
+    navigation: JSON.stringify {tab: @title}
     title: 'Create Account'
 
 exports.post_user_create = (req, res) ->
@@ -37,6 +38,7 @@ exports.post_user_create = (req, res) ->
 exports.get_user_login = (req, res) ->
   redirect = req.param('r')
   res.render 'user/login', {
+    navigation: JSON.stringify {tab: @title}
     title: 'Login'
     props: JSON.stringify {redirect}
   }
@@ -105,6 +107,7 @@ exports.post_change_password = (req, res) ->
 
 exports.get_change_password = (req, res) ->
   res.render 'user/change_password', {
+    navigation: JSON.stringify {tab: @title, user: req.user.to_json()}
     user: req.user,
     title: 'Change Password'
   }

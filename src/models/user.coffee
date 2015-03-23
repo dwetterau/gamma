@@ -25,4 +25,10 @@ module.exports = (sequelize, DataTypes) ->
           return next(err)
         next(null, is_match)
 
+    to_json: () ->
+      return {
+        @username
+        @id
+      }
+
   return User

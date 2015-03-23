@@ -1,8 +1,15 @@
 React = require 'react'
-{MenuItems, LeftNav} = require 'material-ui'
+{MenuItem, LeftNav} = require 'material-ui'
 
 LeftNavigation = React.createClass
   displayName: "LeftNavigation"
+
+  getItem: (link, text) ->
+    return {
+      type: MenuItem.Types.LINK,
+      payload: link
+      text
+    }
 
   getMenuItems: ->
     menuItems = [
@@ -10,14 +17,14 @@ LeftNavigation = React.createClass
     ]
     if @props.user
       menuItems = menuItems.concat [
-        {type: MenuItems.SUBHEADER, text: @props.username}
-        {route: '/user/password', text: 'Change Password'}
-        {route: '/user/logout', text: 'Logout'}
+        {type: MenuItem.SUBHEADER, text: @props.user.username}
+        @getItem '/user/password', 'Change Password'
+        @getItem '/user/logout', 'Logout'
       ]
     else
       menuItems = menuItems.concat [
-        {route: '/user/login', text: 'Login'}
-        {route: '/user/create', text: 'Create Account'}
+        @getItem '/user/login', 'Login'
+        @getItem '/user/create', 'Create Account'
       ]
 
   getSelectedIndex: (menuItems) ->
@@ -29,4 +36,6 @@ LeftNavigation = React.createClass
   render: () ->
     menuItems = @getMenuItems()
     selectedIndex = @getSelectedIndex menuItems
-    <LeftNav menuItems={menuItems}, header='base-node-app', selectedIndex={selectedIndex} />
+    <LeftNav menuItems={menuItems}, selectedIndex={selectedIndex} />
+
+module.exports = {LeftNavigation}
