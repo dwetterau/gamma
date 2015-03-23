@@ -32,3 +32,23 @@ div.alert {
     width: 50%;
     position: relative;
 }
+
+/* Style for user forms */
+.default-paper ul,ol {
+    padding-left: 40px;
+}
+
+.form-paper {
+    width: 50%;
+    margin-left: 25%;
+    margin-right: 25%;
+    margin-bottom: 10px;
+}
+
+.form-container {
+    padding: 2em;
+}
+
+.form-input {
+    display: block;
+}
