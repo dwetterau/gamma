@@ -1,4 +1,4 @@
-React = require 'react'
+###React = require 'react'
 {LeftNavigation} = require '../../components/navigation/left_navigation'
 
 # Render the left navigation
@@ -18,3 +18,8 @@ if $('#login').length
   {Login} = require '../../components/user/login'
   props = JSON.parse($('#props').html())
   React.render React.createElement(Login, props), $('#login').get(0)
+###
+ReactApp = require '../../components/app/app'
+
+# Start the app
+ReactApp()

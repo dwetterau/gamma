@@ -10,17 +10,11 @@ html
 
     link(rel='stylesheet', href='/stylesheets/less_main.css')
     link(rel='stylesheet', href='/stylesheets/style.css')
-    title #{title} | base-node-app
-
-    meta(property="og:title", content=title)
 
   body
-    include partials/navbar
 
     .container
       block content
-
-    include partials/footer
 
     include partials/analytics
 
