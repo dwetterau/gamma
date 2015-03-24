@@ -6,18 +6,18 @@ LeftNavigation = React.createClass
 
   getItem: (link, text) ->
     return {
-      type: MenuItem.Types.LINK,
-      payload: link
+      #type: MenuItem.Types.LINK,
+      route: link
       text
     }
 
   getMenuItems: ->
     menuItems = [
-      {route: '/', text: 'Home'}
+      @getItem '/', 'Home'
     ]
     if @props.user
       menuItems = menuItems.concat [
-        {type: MenuItem.SUBHEADER, text: @props.user.username}
+        {type: MenuItem.Types.SUBHEADER, text: @props.user.username}
         @getItem '/user/password', 'Change Password'
         @getItem '/user/logout', 'Logout'
       ]
@@ -28,7 +28,11 @@ LeftNavigation = React.createClass
       ]
 
   getSelectedIndex: (menuItems) ->
+    console.log menuItems
     for item, index in menuItems
+      console.log @props.tab
+      console.log item.text
+      console.log index
       if item.text == @props.tab
         return index
     return 0
@@ -36,6 +40,7 @@ LeftNavigation = React.createClass
   render: () ->
     menuItems = @getMenuItems()
     selectedIndex = @getSelectedIndex menuItems
-    <LeftNav menuItems={menuItems}, selectedIndex={selectedIndex} />
+    console.log selectedIndex
+    <LeftNav menuItems={menuItems} selectedIndex={selectedIndex} />
 
 module.exports = {LeftNavigation}

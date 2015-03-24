@@ -3,9 +3,11 @@ passport = require 'passport'
 models = require '../models'
 
 exports.get_user_create = (req, res) ->
-  res.render 'user/create_account',
-    navigation: JSON.stringify {tab: @title}
-    title: 'Create Account'
+  title = 'Create Account'
+  res.render 'user/create_account', {
+    title
+    navigation: JSON.stringify {tab: title}
+  }
 
 exports.post_user_create = (req, res) ->
   req.assert('username', 'Username must be at least 3 characters long.').len(3)
@@ -37,9 +39,10 @@ exports.post_user_create = (req, res) ->
 
 exports.get_user_login = (req, res) ->
   redirect = req.param('r')
+  title = 'Login'
   res.render 'user/login', {
-    navigation: JSON.stringify {tab: @title}
-    title: 'Login'
+    title
+    navigation: JSON.stringify {tab: title}
     props: JSON.stringify {redirect}
   }
 
@@ -106,8 +109,9 @@ exports.post_change_password = (req, res) ->
   .failure fail
 
 exports.get_change_password = (req, res) ->
+  title = 'Change Password'
   res.render 'user/change_password', {
-    navigation: JSON.stringify {tab: @title, user: req.user.to_json()}
     user: req.user,
-    title: 'Change Password'
+    title
+    navigation: JSON.stringify {tab: title, user: req.user.to_json()}
   }
