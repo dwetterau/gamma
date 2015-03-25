@@ -12,9 +12,6 @@ injectTapEventPlugin = require 'react-tap-event-plugin'
   - submitLabel: the label for the submit button
 ###
 FormPage = React.createClass
-  displayName: 'FormPage'
-  componentDidMount: () ->
-    injectTapEventPlugin()
 
   getInputs: (inputObjects) ->
     inputs = []
@@ -29,7 +26,7 @@ FormPage = React.createClass
     return inputs
 
   render: () ->
-    <div className="container">
+    <div className="mui-app-content-canvas">
       <div className="page-header">
         <h1>{@props.pageHeader}</h1>
       </div>
@@ -43,4 +40,4 @@ FormPage = React.createClass
       </Paper>
     </div>
 
-module.exports = {FormPage}
+module.exports = FormPage

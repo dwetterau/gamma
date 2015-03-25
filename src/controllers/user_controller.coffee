@@ -2,13 +2,6 @@ passport = require 'passport'
 
 models = require '../models'
 
-exports.get_user_create = (req, res) ->
-  title = 'Create Account'
-  res.render 'user/create_account', {
-    title
-    navigation: JSON.stringify {tab: title}
-  }
-
 exports.post_user_create = (req, res) ->
   req.assert('username', 'Username must be at least 3 characters long.').len(3)
   req.assert('password', 'Password must be at least 4 characters long.').len(4)
@@ -36,15 +29,6 @@ exports.post_user_create = (req, res) ->
       .failure () ->
         req.flash 'errors', {msg: 'Username already in use!'}
         res.redirect '/user/create'
-
-exports.get_user_login = (req, res) ->
-  redirect = req.param('r')
-  title = 'Login'
-  res.render 'user/login', {
-    title
-    navigation: JSON.stringify {tab: title}
-    props: JSON.stringify {redirect}
-  }
 
 exports.post_user_login = (req, res, next) ->
   req.assert('username', 'Username is not valid.').notEmpty()
@@ -107,11 +91,3 @@ exports.post_change_password = (req, res) ->
           res.redirect '/user/password'
         .failure fail
   .failure fail
-
-exports.get_change_password = (req, res) ->
-  title = 'Change Password'
-  res.render 'user/change_password', {
-    user: req.user,
-    title
-    navigation: JSON.stringify {tab: title, user: req.user.to_json()}
-  }

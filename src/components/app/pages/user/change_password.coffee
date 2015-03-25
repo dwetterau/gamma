@@ -1,8 +1,8 @@
 React = require 'react'
-{FormPage} = require './form_page'
+FormPage = require './form_page'
 
 ChangePassword = React.createClass
-  displayName: 'ChangePassword'
+
   render: () ->
     React.createElement FormPage,
       pageHeader: 'Change Password'
@@ -31,4 +31,4 @@ ChangePassword = React.createClass
       ]
       submitLabel: 'Change password'
 
-module.exports = {ChangePassword}
+module.exports = ChangePassword

@@ -17,3 +17,5 @@ App = ->
     # This is called whenever the URL is changed.
     # Handler is the ReactComponent class that will be rendered
     React.render React.createElement(Handler), document.body
+
+module.exports = App

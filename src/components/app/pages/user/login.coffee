@@ -1,12 +1,12 @@
 React = require 'react'
-{FormPage} = require './form_page'
+FormPage = require './form_page'
 
-CreateUser = React.createClass
-  displayName: 'CreateUser'
+Login = React.createClass
+
   render: () ->
     React.createElement FormPage,
-      pageHeader: 'Create an account'
-      action: '/user/create'
+      pageHeader: 'Sign in'
+      action: '/user/login'
       inputs: [
         {
           type: "text"
@@ -22,13 +22,13 @@ CreateUser = React.createClass
           id: "password"
           floatingLabelText: "Password"
         }, {
-          type: "password"
-          name: "confirm_password"
-          key: "confirm_password"
-          id: "confirm_password"
-          floatingLabelText: "Confirm Password"
+          type: "hidden"
+          name: "redirect"
+          key: "redirect"
+          id: "redirect"
+          value: @props.redirect
         }
       ]
-      submitLabel: 'Create account'
+      submitLabel: 'Login'
 
-module.exports = {CreateUser}
+module.exports = Login

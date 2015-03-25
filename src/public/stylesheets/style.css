@@ -1,20 +1,4 @@
-body {
-  padding: 50px;
-}
-
-html {
-    position: relative;
-    min-height: 100%;
-}
-
-body {
-    padding-top: 60px;
-    padding-left: 0;
-    padding-right: 0;
-    margin-bottom: 75px;
-}
-
-footer {
+.footer {
     position: absolute;
     bottom: 0;
     width: 100%;

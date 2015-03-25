@@ -9,12 +9,9 @@ user_controller = require '../controllers/user_controller'
 router.get '/', index_controller.get_index
 
 # User routes
-router.get '/user/create', user_controller.get_user_create
 router.post '/user/create', user_controller.post_user_create
-router.get '/user/login', user_controller.get_user_login
 router.post '/user/login', user_controller.post_user_login
 router.get '/user/logout', user_controller.get_user_logout
-router.get '/user/password', passport_config.isAuthenticated, user_controller.get_change_password
 router.post '/user/password', passport_config.isAuthenticated, user_controller.post_change_password
 
 module.exports = router
