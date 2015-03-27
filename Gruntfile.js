@@ -16,7 +16,7 @@ module.exports = function(grunt) {
                     'src/components/**/*.coffee',
                     'src/lib/common/**/*.coffee'
                 ],
-                tasks: ['cjsx']
+                tasks: ['browserify']
             },
             server: {
                 files: [
@@ -33,10 +33,17 @@ module.exports = function(grunt) {
                 tasks: ['sync']
             }
         },
-        cjsx: {
-            compile: {
+        browserify: {
+            dist: {
                 files: {
                     'bin/public/js/bundle.js': 'src/public/js/index.coffee'
+                },
+                options: {
+                    transform: ["coffee-reactify"],
+                    browserifyOptions: {
+                        debug: true,
+                        extensions: ['.cjsx', '.coffee']
+                    }
                 }
             }
         },
@@ -69,7 +76,7 @@ module.exports = function(grunt) {
         }
     });
 
-    grunt.loadNpmTasks('grunt-coffee-react');
+    grunt.loadNpmTasks('grunt-browserify');
     grunt.loadNpmTasks('grunt-contrib-coffee');
     grunt.loadNpmTasks('grunt-contrib-watch');
     grunt.loadNpmTasks('grunt-sync');
