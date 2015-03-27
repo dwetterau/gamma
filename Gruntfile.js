@@ -5,7 +5,12 @@ module.exports = function(grunt) {
             main: {
                 files: [
                     {cwd: 'src', src: './views/**', dest: 'bin/'},
-                    {cwd: 'src', src: ['./public/**', '!./public/**/*.coffee'], dest: 'bin/'}
+                    {cwd: 'src', src: ['./public/**', '!./public/**/*.coffee'], dest: 'bin/'},
+                    {
+                        cwd: 'node_modules/material-design-icons/sprites',
+                        src: './svg-sprite/*.css',
+                        dest: 'bin/public/stylesheets/external/'
+                    }
                 ]
             }
         },
