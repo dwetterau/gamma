@@ -61,8 +61,8 @@ exports.get_user_logout = (req, res) ->
   res.redirect '/'
 
 exports.post_change_password = (req, res) ->
-  req.assert('old_password', 'Password must be at least 4 characters long.').len(4)
-  req.assert('new_password', 'Password must be at least 4 characters long.').len(4)
+  req.assert('old_password', 'Old password must be at least 4 characters long.').len(4)
+  req.assert('new_password', 'New password must be at least 4 characters long.').len(4)
   req.assert('confirm_password', 'Passwords do not match.').equals(req.body.new_password)
   errors = req.validationErrors()
 
