@@ -12,7 +12,7 @@ module.exports = function(grunt) {
         less: {
             development: {
                 files: {
-                    'src/public/stylesheets/less_main.css': 'src/public/stylesheets/external/less/main.less'
+                    'bin/public/stylesheets/less_main.css': 'src/public/stylesheets/external/less/main.less'
                 }
             }
         },
@@ -99,5 +99,5 @@ module.exports = function(grunt) {
     grunt.loadNpmTasks('grunt-contrib-less');
     grunt.loadNpmTasks('grunt-nodemon');
 
-    grunt.registerTask('default', ['coffee', 'browserify', 'sync']);
+    grunt.registerTask('default', ['coffee', 'browserify', 'less', 'sync']);
 };
