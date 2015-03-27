@@ -9,6 +9,13 @@ module.exports = function(grunt) {
                 ]
             }
         },
+        less: {
+            development: {
+                files: {
+                    'src/public/stylesheets/less_main.css': 'src/public/stylesheets/external/less/main.less'
+                }
+            }
+        },
         watch: {
             app: {
                 files: [
@@ -28,9 +35,18 @@ module.exports = function(grunt) {
             },
             templates: {
                 files: [
-                    'src/views/**'
+                    'src/views/**',
+                    'src/public/**/*.css',
+                    'src/public/**/*.js',
+                    'src/public/**/*.ico'
                 ],
                 tasks: ['sync']
+            },
+            lessFiles: {
+                files: [
+                    'src/public/**/*.less'
+                ],
+                tasks: ['less']
             }
         },
         browserify: {
@@ -80,7 +96,8 @@ module.exports = function(grunt) {
     grunt.loadNpmTasks('grunt-contrib-coffee');
     grunt.loadNpmTasks('grunt-contrib-watch');
     grunt.loadNpmTasks('grunt-sync');
+    grunt.loadNpmTasks('grunt-contrib-less');
     grunt.loadNpmTasks('grunt-nodemon');
 
-    grunt.registerTask('default', ['coffee']);
+    grunt.registerTask('default', ['coffee', 'browserify', 'sync']);
 };
