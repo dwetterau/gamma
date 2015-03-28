@@ -25,6 +25,16 @@ FormPage = React.createClass
       inputs.push React.createElement TextField, inputObject
     return inputs
 
+  _onSubmit: (e) ->
+    # Get the values for all the fields and then call the parent's onSubmit with them as the parameter
+    fields = {}
+    for inputObject in @props.inputs
+      id = inputObject.id
+      fields[id] = $('#' + id).val()
+    @props.onSubmit(fields)
+
+    e.preventDefault()
+
   render: () ->
     <div className="mui-app-content-canvas">
       <div className="page-header">
@@ -32,7 +42,7 @@ FormPage = React.createClass
       </div>
       <Paper className="default-paper form-paper">
         <div className="form-container">
-          <form className="form-horizontal" action={@props.action} method="POST">
+          <form className="form-horizontal" onSubmit={@_onSubmit} method="POST">
             {@getInputs @props.inputs}
             <RaisedButton type="submit" label={@props.submitLabel} primary=true />
           </form>

@@ -10,6 +10,9 @@ App = ->
   # Will go away with react 1.0 release
   injectTapEventPlugin()
 
+  # Initialize the data stores
+  UserSessionStore = require './stores/user_session_store'
+
   Router.create(
     routes: AppRoutes
     scrollBehavior: Router.ScrollToTopBehavior

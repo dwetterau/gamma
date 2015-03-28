@@ -54,7 +54,6 @@ LeftNavigation = React.createClass
   render: ->
     menuItems = @getMenuItems()
     selectedIndex = @getSelectedIndex menuItems
-    console.log selectedIndex
     <LeftNav
       menuItems={menuItems}
       selectedIndex={selectedIndex}

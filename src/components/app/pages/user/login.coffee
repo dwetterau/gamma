@@ -1,12 +1,15 @@
 React = require 'react'
 FormPage = require './form_page'
+{userLoginRequest} = require '../../actions'
 
 Login = React.createClass
+
+  _onSubmit: (fields) ->
+    userLoginRequest(fields)
 
   render: () ->
     React.createElement FormPage,
       pageHeader: 'Sign in'
-      action: '/user/login'
       inputs: [
         {
           type: "text"
@@ -30,5 +33,6 @@ Login = React.createClass
         }
       ]
       submitLabel: 'Login'
+      onSubmit: @_onSubmit
 
 module.exports = Login
