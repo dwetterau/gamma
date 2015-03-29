@@ -1,10 +1,23 @@
 React = require 'react'
 Router = require 'react-router'
 {MenuItem, LeftNav} = require 'material-ui'
+userSessionStore = require '../stores/user_session_store'
 
 LeftNavigation = React.createClass
 
   mixins: [Router.Navigation, Router.State]
+
+  getInitialState: ->
+    return {}
+
+  onUserSessionUpdate: (user) ->
+    @setState {user}
+
+  componentDidMount: ->
+    @unsubscribeFromUserSessionStore = userSessionStore.listen(@onUserSessionUpdate)
+
+  componentWillUnmount: ->
+    @unsubscribeFromUserSessionStore()
 
   getItem: (link, text, onClick) ->
     return {
@@ -17,9 +30,9 @@ LeftNavigation = React.createClass
     menuItems = [
       @getItem 'home', 'Home'
     ]
-    if @props.user
+    if @state.user
       menuItems = menuItems.concat [
-        {type: MenuItem.Types.SUBHEADER, text: @props.user.username}
+        {type: MenuItem.Types.SUBHEADER, text: @state.user.username}
         @getItem 'user/password', 'Change Password'
         @getItem null, 'Logout', @_onLogoutClick
       ]

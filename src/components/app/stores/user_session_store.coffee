@@ -2,7 +2,7 @@ Reflux = require 'reflux'
 
 {userLoginRequest, userLogoutRequest} = require '../actions'
 
-exports.UserSessionStore = Reflux.createStore
+UserSessionStore = Reflux.createStore
   listenables: [{userLoginRequest}, {userLogoutRequest}]
   init: ->
     # Set up the initial store
@@ -18,15 +18,15 @@ exports.UserSessionStore = Reflux.createStore
     .fail (error) ->
       userLoginRequest.failed(error)
 
-  onUserLoginRequestCompleted: (user) ->
+  onUserLoginRequestCompleted: (response) ->
     # TODO: Figure out what to do with the potential redirect here
-    console.log 'login success!', user
-    @user = user
+    @user = response.user
+    @_triggerStateChange()
 
   onUserLoginRequestFailed: (error) ->
     # Failed to log the user in. Should do a toast or something
-    console.log 'login failed!', error
     @user = null
+    @_triggerStateChange()
 
   onUserLogoutRequest: ->
     # Make the request to logout
@@ -34,3 +34,8 @@ exports.UserSessionStore = Reflux.createStore
   onUserLogoutRequestCompleted: ->
 
   onUserLogoutRequestFailed: (error) ->
+
+  _triggerStateChange: ->
+    @trigger @user
+
+module.exports = UserSessionStore
