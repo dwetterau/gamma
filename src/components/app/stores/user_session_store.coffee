@@ -18,7 +18,6 @@ UserSessionStore = Reflux.createStore
     .fail userLoginRequest.failed
 
   onUserLoginRequestCompleted: (response) ->
-    # TODO: Figure out what to do with the potential redirect here
     @user = response.user
     @_triggerStateChange()
 

@@ -8,7 +8,7 @@ Layout = require './layout'
 
 Home = require './pages/home'
 UserLogin = require './pages/user/login'
-UserLogin = require './pages/user/logout'
+UserLogout = require './pages/user/logout'
 UserChangePassword = require './pages/user/change_password'
 UserCreate = require './pages/user/create_user'
 

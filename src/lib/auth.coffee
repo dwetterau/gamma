@@ -7,13 +7,13 @@ passport.serializeUser (user, done) ->
   done null, user.id
 
 passport.deserializeUser (id, done) ->
-  models.User.find(id).success (user) ->
+  models.User.find(id).then (user) ->
     done null, user
-  .failure (err) ->
+  .catch (err) ->
     done err
 
 passport.use new LocalStrategy {usernameField: 'username'}, (username, password, done) ->
-  models.User.find({where: {username}}).success (user) ->
+  models.User.find({where: {username}}).then (user) ->
     if not user
       return done null, false, {message: 'Invalid username or password.'}
     user.compare_password password, (err, is_match) ->

@@ -1,11 +1,19 @@
 React = require 'react'
+Router = require 'react-router'
 FormPage = require './form_page'
 {userLoginRequest} = require '../../actions'
 
 Login = React.createClass
 
+  mixins: [Router.Navigation]
+
   _onSubmit: (fields) ->
-    userLoginRequest(fields)
+    userLoginRequest(fields).then (response) =>
+      @transitionTo response.redirect_url
+
+    .catch (error) ->
+      # TODO Toast the error messages!
+      console.log error
 
   render: () ->
     React.createElement FormPage,
