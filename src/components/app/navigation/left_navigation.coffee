@@ -19,11 +19,10 @@ LeftNavigation = React.createClass
   componentWillUnmount: ->
     @unsubscribeFromUserSessionStore()
 
-  getItem: (link, text, onClick) ->
+  getItem: (link, text) ->
     return {
       route: link
       text
-      onClick
     }
 
   getMenuItems: ->
@@ -34,7 +33,7 @@ LeftNavigation = React.createClass
       menuItems = menuItems.concat [
         {type: MenuItem.Types.SUBHEADER, text: @state.user.username}
         @getItem 'user/password', 'Change Password'
-        @getItem null, 'Logout', @_onLogoutClick
+        @getItem 'user/logout', 'Logout'
       ]
     else
       menuItems = menuItems.concat [
@@ -49,7 +48,6 @@ LeftNavigation = React.createClass
     return null
 
   _onLogoutClick: ->
-    $.get('/user/logout')
 
   _onLeftNavChange: (e, key, payload) ->
     @transitionTo payload.route

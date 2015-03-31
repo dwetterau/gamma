@@ -15,8 +15,7 @@ UserSessionStore = Reflux.createStore
         userLoginRequest.completed(response.body)
       else
         userLoginRequest.failed(response.error)
-    .fail (error) ->
-      userLoginRequest.failed(error)
+    .fail userLoginRequest.failed
 
   onUserLoginRequestCompleted: (response) ->
     # TODO: Figure out what to do with the potential redirect here
@@ -30,10 +29,19 @@ UserSessionStore = Reflux.createStore
 
   onUserLogoutRequest: ->
     # Make the request to logout
+    $.get('/user/logout').done (response) ->
+      if response.ok
+        userLogoutRequest.completed(response.body)
+      else
+        userLogoutRequest.failed(response.error)
+    .fail userLogoutRequest.failed
 
   onUserLogoutRequestCompleted: ->
+    @user = null
+    @_triggerStateChange()
 
   onUserLogoutRequestFailed: (error) ->
+    # TODO: Figure out what to do in this case, nothing perhaps?
 
   _triggerStateChange: ->
     @trigger @user
