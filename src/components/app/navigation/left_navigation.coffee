@@ -2,6 +2,7 @@ React = require 'react'
 Router = require 'react-router'
 {MenuItem, LeftNav} = require 'material-ui'
 userSessionStore = require '../stores/user_session_store'
+{userLogoutRequest} = require '../actions'
 
 LeftNavigation = React.createClass
 
@@ -33,7 +34,7 @@ LeftNavigation = React.createClass
       menuItems = menuItems.concat [
         {type: MenuItem.Types.SUBHEADER, text: @state.user.username}
         @getItem 'user/password', 'Change Password'
-        @getItem 'user/logout', 'Logout'
+        {text: 'Logout'}
       ]
     else
       menuItems = menuItems.concat [
@@ -48,9 +49,18 @@ LeftNavigation = React.createClass
     return null
 
   _onLogoutClick: ->
+    userLogoutRequest().then (response) =>
+      @transitionTo response.redirect_url
+
+    .catch (error) ->
+      # TODO Toast the error messages!
+      console.log error
 
   _onLeftNavChange: (e, key, payload) ->
-    @transitionTo payload.route
+    if payload.text == 'Logout'
+      @_onLogoutClick()
+    else
+      @transitionTo payload.route
 
   _onHeaderClick: ->
     @transitionTo 'root'
