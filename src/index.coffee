@@ -62,7 +62,7 @@ app.use (req, res, next) ->
     return index_controller.get_index req, res
 
   # catch 404 and forward to error handler
-  err = new Error('Not Found')
+  err = new Error('404 Page Not Found')
   err.status = 404
   next(err)
 
