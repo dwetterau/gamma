@@ -10,6 +10,9 @@ LeftNavigation = React.createClass
   mixins: [Router.Navigation, Router.State]
 
   getInitialState: ->
+    user = userSessionStore.getUser()?
+    if user?
+      return {user}
     return {}
 
   onUserSessionUpdate: (user) ->
@@ -29,7 +32,7 @@ LeftNavigation = React.createClass
 
   getMenuItems: ->
     menuItems = [
-      @getItem 'home', 'Home'
+      @getItem '/', 'Home'
     ]
     if @state.user
       menuItems = menuItems.concat [

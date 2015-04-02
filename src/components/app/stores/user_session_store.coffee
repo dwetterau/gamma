@@ -1,9 +1,9 @@
 Reflux = require 'reflux'
 
-{userLoginRequest, userLogoutRequest} = require '../actions'
+{userLoginRequest, userLogoutRequest, addUserSession} = require '../actions'
 
 UserSessionStore = Reflux.createStore
-  listenables: [{userLoginRequest}, {userLogoutRequest}]
+  listenables: [{userLoginRequest}, {userLogoutRequest}, {addUserSession}]
   init: ->
     # Set up the initial store
     @user = null
@@ -42,7 +42,14 @@ UserSessionStore = Reflux.createStore
   onUserLogoutRequestFailed: (error) ->
     # TODO: Figure out what to do in this case, nothing perhaps?
 
+  onAddUserSession: (user) ->
+    @user = user
+    @_triggerStateChange()
+
   _triggerStateChange: ->
     @trigger @user
+
+  getUser: ->
+    return @user
 
 module.exports = UserSessionStore

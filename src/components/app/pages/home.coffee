@@ -1,14 +1,26 @@
 React = require 'react'
+userSessionStore = require '../stores/user_session_store'
 
 Home = React.createClass
-  contextTypes: {
-    router: React.PropTypes.func
-  }
+  getInitialState: ->
+    user = userSessionStore.getUser()
+    if user?
+      return {user}
+    return {}
+
+  onUserSessionUpdate: (user) ->
+    @setState {user}
+
+  componentDidMount: ->
+    @unsubscribeFromUserSessionStore = userSessionStore.listen(@onUserSessionUpdate)
+
+  componentWillUnmount: ->
+    @unsubscribeFromUserSessionStore()
 
   render: ->
     return (
       <div className="mui-app-content-canvas">
-        Hello World!
+        Hello {if @state.user then @state.user.username else "World"}!
       </div>
     )
 

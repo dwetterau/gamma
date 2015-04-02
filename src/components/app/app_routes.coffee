@@ -13,7 +13,7 @@ UserCreate = require './pages/user/create_user'
 
 AppRoutes = (
   <Route name="root" path="/" handler={Layout}>
-    <Route name="home" handler={Home}/>
+    <Route name="/" handler={Home}/>
     <Route name="user/login" handler={UserLogin}/>
     <Route name="user/password" handler={UserChangePassword}/>
     <Route name="user/create" handler={UserCreate}/>
