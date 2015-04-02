@@ -3,6 +3,7 @@ Router = require 'react-router'
 {MenuItem, LeftNav} = require 'material-ui'
 userSessionStore = require '../stores/user_session_store'
 {userLogoutRequest} = require '../actions'
+Notifier = require '../utils/notifier'
 
 LeftNavigation = React.createClass
 
@@ -46,15 +47,14 @@ LeftNavigation = React.createClass
     for item, index in menuItems
       if item.route and @isActive item.route
         return index
-    return null
+    return 0
 
   _onLogoutClick: ->
     userLogoutRequest().then (response) =>
       @transitionTo response.redirect_url
+      Notifier.info 'Logout successful.'
 
-    .catch (error) ->
-      # TODO Toast the error messages!
-      console.log error
+    .catch Notifier.error
 
   _onLeftNavChange: (e, key, payload) ->
     if payload.text == 'Logout'

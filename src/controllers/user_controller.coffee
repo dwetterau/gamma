@@ -59,31 +59,27 @@ exports.get_user_logout = (req, res) ->
 exports.post_change_password = (req, res) ->
   req.assert('old_password', 'Old password must be at least 4 characters long.').len(4)
   req.assert('new_password', 'New password must be at least 4 characters long.').len(4)
-  req.assert('confirm_password', 'Passwords do not match.').equals(req.body.new_password)
+  req.assert('confirm_password', 'Passwords do not match.').equals(req.param('new_password'))
   errors = req.validationErrors()
 
   if errors
-    req.flash 'errors', errors
-    return res.redirect '/user/password'
+    return res.send {ok: false, error: errors}
 
-  old_password = req.body.old_password
-  new_password = req.body.new_password
+  old_password = req.param('old_password')
+  new_password = req.param('new_password')
 
-  fail = () ->
-    req.flash 'errors', {msg: 'Failed to update password.'}
-    return res.redirect '/user/password'
+  fail = (message) ->
+    return res.send {ok: false, error: message}
 
   models.User.find(req.user.id).then (user) ->
     user.compare_password old_password, (err, is_match) ->
       if not is_match or err
-        req.flash 'errors', {msg: 'Current password incorrect.'}
-        return fail();
+        return fail('Current password incorrect');
 
       user.hash_and_set_password new_password, (err) ->
         if err?
-          return fail()
+          return fail("Failed to set new password")
         user.save().then () ->
-          req.flash 'success', {msg: 'Password changed!'}
-          res.redirect '/user/password'
+          res.send {ok: true}
         .catch fail
   .catch fail

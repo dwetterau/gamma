@@ -2,6 +2,7 @@ React = require 'react'
 Router = require 'react-router'
 FormPage = require './form_page'
 {userLoginRequest} = require '../../actions'
+Notifier = require '../../utils/notifier'
 
 Login = React.createClass
 
@@ -10,10 +11,9 @@ Login = React.createClass
   _onSubmit: (fields) ->
     userLoginRequest(fields).then (response) =>
       @transitionTo response.redirect_url
+      Notifier.info('Login successful!');
 
-    .catch (error) ->
-      # TODO Toast the error messages!
-      console.log error
+    .catch Notifier.error
 
   render: () ->
     React.createElement FormPage,
