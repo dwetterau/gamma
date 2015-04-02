@@ -34,7 +34,8 @@ module.exports = function(grunt) {
                 files: [
                     'src/models/**/*.coffee',
                     'src/controllers/**/*.coffee',
-                    'src/lib/**/*.coffee'
+                    'src/lib/**/*.coffee',
+                    'src/index.coffee'
                 ],
                 tasks: ['coffee']
             },

@@ -12,6 +12,7 @@ App = ->
 
   Router.create(
     routes: AppRoutes
+    location: Router.HistoryLocation
     scrollBehavior: Router.ScrollToTopBehavior
   ).run (Handler) ->
     # This is called whenever the URL is changed.

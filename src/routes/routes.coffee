@@ -14,4 +14,8 @@ router.post '/user/login', user_controller.post_user_login
 router.get '/user/logout', user_controller.get_user_logout
 router.post '/user/password', passport_config.isAuthenticated, user_controller.post_change_password
 
+router.REGISTERED_ROUTES = {
+  '/user/create', '/user/login', '/user/password'
+}
+
 module.exports = router

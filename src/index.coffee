@@ -19,6 +19,7 @@ passport = require 'passport'
 
 all_routes = require './routes/routes'
 
+index_controller = require './controllers/index_controller'
 
 app = express()
 
@@ -55,8 +56,12 @@ app.use passport.session()
 # Setup all the routes
 app.use '/', all_routes
 
-# catch 404 and forward to error handler
+# Handle the HTML5 links the right way
 app.use (req, res, next) ->
+  if req.path of all_routes.REGISTERED_ROUTES
+    return index_controller.get_index req, res
+
+  # catch 404 and forward to error handler
   err = new Error('Not Found')
   err.status = 404
   next(err)
