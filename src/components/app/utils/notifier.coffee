@@ -6,10 +6,23 @@ Notifier =
     }
 
   error: (message, exception) ->
-    $.snackbar {
-      content: message
-      timeout: 3000
-    }
+    display = (message) ->
+      $.snackbar {
+        content: message
+        timeout: 3000
+      }
+
+    if typeof message == 'object'
+      for error in message
+        if error.msg?
+          display error.msg
+        else if error.message?
+          display error.message
+        else
+          display error
+    else
+      display message
+
     if exception?
       console.error exception
 

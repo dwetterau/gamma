@@ -10,11 +10,7 @@ ChangePassword = React.createClass
         Notifier.info 'Password changed!'
         @_clearFields fields
       else
-        if typeof response.error == 'object'
-          for error in response.error
-            Notifier.error error.msg
-        else
-          Notifier.error response.error
+        Notifier.error response.error
 
     .fail Notifier.error
 

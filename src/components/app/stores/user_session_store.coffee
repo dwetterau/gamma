@@ -1,9 +1,14 @@
 Reflux = require 'reflux'
 
-{userLoginRequest, userLogoutRequest, addUserSession} = require '../actions'
+{userLoginRequest, userLogoutRequest, userCreateRequest, addUserSession} = require '../actions'
 
 UserSessionStore = Reflux.createStore
-  listenables: [{userLoginRequest}, {userLogoutRequest}, {addUserSession}]
+  listenables: [
+    {userLoginRequest},
+    {userLogoutRequest},
+    {userCreateRequest},
+    {addUserSession}
+  ]
   init: ->
     # Set up the initial store
     @user = null
@@ -23,6 +28,26 @@ UserSessionStore = Reflux.createStore
 
   onUserLoginRequestFailed: (error) ->
     # Failed to log the user in. Should do a toast or something
+    @user = null
+    @_triggerStateChange()
+
+  onUserCreateRequest: (fields) ->
+    # Make the request to create the user, after logging out the current one
+    @user = null
+    @_triggerStateChange()
+    $.post('/user/create', fields).done (response) ->
+      if response.ok
+        userCreateRequest.completed response.body
+      else
+        userCreateRequest.failed response.error
+    .fail userCreateRequest.failed
+
+  onUserCreateRequestCompleted: (response) ->
+    @user = response.user
+    @_triggerStateChange()
+
+  onUserCreateRequestFailed: (error) ->
+    # Failed to create the user
     @user = null
     @_triggerStateChange()
 

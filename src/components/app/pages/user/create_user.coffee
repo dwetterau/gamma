@@ -1,7 +1,7 @@
 React = require 'react'
 Router = require 'react-router'
 FormPage = require './form_page'
-{createUserRequest} = require '../../actions'
+{userCreateRequest} = require '../../actions'
 Notifier = require '../../utils/notifier'
 
 CreateUser = React.createClass
@@ -9,7 +9,7 @@ CreateUser = React.createClass
   mixins: [Router.Navigation]
 
   _onSubmit: (fields) ->
-    createUserRequest(fields).then (response) =>
+    userCreateRequest(fields).then (response) =>
       @transitionTo response.redirect_url
       Notifier.info 'Account created!'
 
@@ -42,5 +42,6 @@ CreateUser = React.createClass
         }
       ]
       submitLabel: 'Create account'
+      onSubmit: @_onSubmit
 
 module.exports = CreateUser

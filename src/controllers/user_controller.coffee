@@ -8,27 +8,24 @@ exports.post_user_create = (req, res) ->
   req.assert('confirm_password', 'Passwords do not match.').equals(req.body.password)
   errors = req.validationErrors()
 
+  fail = (error) ->
+    res.send {ok: false, error: error}
+
   if errors
-    req.flash 'errors', errors
-    return res.redirect '/user/create'
+    return fail errors
 
   username = req.body.username
   password = req.body.password
   new_user = models.User.build({username})
   new_user.hash_and_set_password password, (err) ->
     if err?
-      req.flash 'errors', {msg: "Unable to create account at this time"}
-      return res.redirect '/user/create'
+      return fail "Unable to create account at this time"
     else
       new_user.save().then ->
         req.logIn new_user, (err) ->
-          req.flash 'success', {msg: 'Your account has been created!'}
-          if err?
-            req.flash 'info', {msg: "Could not automatically log you in at this time."}
-          res.redirect '/'
+          res.send {ok: true, body: {user: new_user.to_json(), redirect_url: '/'}}
       .catch ->
-        req.flash 'errors', {msg: 'Username already in use!'}
-        res.redirect '/user/create'
+        return fail 'Username already in use!'
 
 exports.post_user_login = (req, res, next) ->
   req.assert('username', 'Username is not valid.').notEmpty()
