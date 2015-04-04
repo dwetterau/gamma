@@ -22,21 +22,14 @@ CreateUser = React.createClass
       inputs: [
         {
           type: "text"
-          name: "username"
-          key: "username"
           id: "username"
           floatingLabelText: "Username"
-          autofocus: ""
         }, {
           type: "password"
-          name: "password"
-          key: "password"
           id: "password"
           floatingLabelText: "Password"
         }, {
           type: "password"
-          name: "confirm_password"
-          key: "confirm_password"
           id: "confirm_password"
           floatingLabelText: "Confirm Password"
         }

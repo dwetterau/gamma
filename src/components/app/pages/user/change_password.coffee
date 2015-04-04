@@ -14,32 +14,25 @@ ChangePassword = React.createClass
 
     .fail Notifier.error
 
-  _clearFields: (fields) ->
-    for field of fields
-      $('#' + field).val ''
+  _clearFields: ->
+    @refs.FormPage.clearValues()
 
   render: () ->
     React.createElement FormPage,
+      ref: 'FormPage'
       pageHeader: 'Change Password'
       action: '/user/password'
       inputs: [
         {
           type: "password"
-          name: "old_password"
-          key: "old_password"
           id: "old_password"
           floatingLabelText: "Old Password"
-          autofocus: true
         }, {
           type: "password"
-          name: "new_password"
-          key: "new_password"
           id: "new_password"
           floatingLabelText: "New Password"
         }, {
           type: "password"
-          name: "confirm_password"
-          key: "confirm_password"
           id: "confirm_password"
           floatingLabelText: "Confirm Password"
         }

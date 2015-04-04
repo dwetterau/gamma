@@ -18,6 +18,8 @@ FormPage = React.createClass
     for inputObject in inputObjects
       inputObject.className = "form-input"
       inputObject.hintText = ""
+      inputObject.ref = inputObject.id
+      inputObject.key = inputObject.id
       if inputObject.type == 'hidden'
         inputs.push React.createElement "input", inputObject
         continue
@@ -30,10 +32,24 @@ FormPage = React.createClass
     fields = {}
     for inputObject in @props.inputs
       id = inputObject.id
-      fields[id] = $('#' + id).val()
+      obj = @refs[id]
+
+      # If it's a text field grab that, otherwise get it from the props
+      if obj.getValue
+        fields[id] = obj.getValue()
+      else
+        fields[id] = obj.props.value
     @props.onSubmit(fields)
 
     e.preventDefault()
+
+  clearValues: ->
+    for inputObject in @props.inputs
+      obj = @refs[inputObject.id]
+
+      # Make sure it's not a hidden field, if it is we don't clear it
+      if obj.clearValue
+        obj.clearValue()
 
   render: () ->
     <div className="mui-app-content-canvas">

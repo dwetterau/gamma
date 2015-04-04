@@ -84,7 +84,7 @@ LeftNavigation = React.createClass
       ref="leftNav"
       docked={false}
       isInitiallyOpen={false}
-      header={@getHeader}
+      header={@_getHeader()}
       onChange={@_onLeftNavChange}/>
 
 module.exports = LeftNavigation
