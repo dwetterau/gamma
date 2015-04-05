@@ -73,7 +73,7 @@ LeftNavigation = React.createClass
     @refs.leftNav.toggle()
 
   _getHeader: ->
-    <div className="logo" onClick={@_onHeaderClick}>base-node-app</div>
+    <div className="logo" onClick={@_onHeaderClick}>Gamma</div>
 
   render: ->
     menuItems = @getMenuItems()

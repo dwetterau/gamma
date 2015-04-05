@@ -1,12 +1,12 @@
-base-node-app
+Gamma
 =============
 
-A simple website starting point using the Sequelize ORM for MySQL written in Coffeescript and React with Reflux for rendering with Material-ui components for style.
+A web based chat client that allows channel based communications to fork into
+separate, short-lived threads of conversation.
 
 ### Description
 
-This site has a simple Material Design themed UI to allow users to log in, and update their password.
-The point of this project is to provide a launching pad for an application without the need to rewrite user management code over and over again.
+(WIP)
 
 ### Installation Instructions
 
@@ -18,3 +18,4 @@ you need to compile all the Coffeescript to run the script that builds the MySQL
 First run `grunt` and then run `node ./bin/oneoff/init_db.js` until it says the initialization has finished.
 
 `grunt nodemon` then starts the server and `grunt watch` is helpful for developing.
+
