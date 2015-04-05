@@ -19,7 +19,10 @@ Home = React.createClass
 
   render: ->
     return (
-      <div className="mui-app-content-canvas">
+      <div className="mui-app-content-canvas container">
+        <div className="page-header">
+          <h1>Welcome</h1>
+        </div>
         Hello {if @state.user then @state.user.username else "World"}!
       </div>
     )

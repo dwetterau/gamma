@@ -52,7 +52,7 @@ FormPage = React.createClass
         obj.clearValue()
 
   render: () ->
-    <div className="mui-app-content-canvas">
+    <div className="mui-app-content-canvas container">
       <div className="page-header">
         <h1>{@props.pageHeader}</h1>
       </div>
