@@ -7,6 +7,10 @@ module.exports = (sequelize, DataTypes) ->
       unique: true
     }
     password: DataTypes.STRING
+  , classMethods:
+    associate: (models) ->
+      User.hasMany(models.Message)
+      User.belongsToMany models.Thread, {through: 'UserThread'}
   , instanceMethods:
 
     hash_and_set_password: (unhashed_password, next) ->
