@@ -2,11 +2,13 @@ bcrypt = require 'bcrypt'
 
 module.exports = (sequelize, DataTypes) ->
   User = sequelize.define "User",
-    username: {
+    username:
       type: DataTypes.STRING
       unique: true
-    }
-    password: DataTypes.STRING
+      validate: {notNull: true}
+    password:
+      type: DataTypes.STRING
+      validate: {notNull: true}
   , classMethods:
     associate: (models) ->
       User.hasMany(models.Message)

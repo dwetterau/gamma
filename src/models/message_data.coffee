@@ -1,8 +1,8 @@
 module.exports = (sequelize, DataTypes) ->
   MessageData = sequelize.define "MessageData",
-    value: {
+    value:
       type: DataTypes.BLOB
-    }
+      validate: {notNull: true}
   , classMethods:
     associate: (models) ->
       MessageData.belongsTo(models.Message)

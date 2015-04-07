@@ -1,6 +1,11 @@
 module.exports = (sequelize, DataTypes) ->
   Message = sequelize.define "Message",
-    hidden: DataTypes.BOOLEAN
+    hidden:
+      type: DataTypes.BOOLEAN
+      validate: {notNull: true}
+    type:
+      type: DataTypes.INTEGER
+      validate: {notNull: true}
   , classMethods:
     associate: (models) ->
       Message.belongsTo models.User, {as: 'Author'}

@@ -1,6 +1,8 @@
 module.exports = (sequelize, DataTypes) ->
   Thread = sequelize.define "Thread",
-    displayName:  DataTypes.STRING(64)
+    displayName:
+      type: DataTypes.STRING(64)
+      validate: {notNull: true}
   , classMethods:
     associate: (models) ->
       Thread.hasMany(models.Message)
