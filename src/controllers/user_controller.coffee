@@ -9,6 +9,7 @@ exports.post_user_create = (req, res) ->
   errors = req.validationErrors()
 
   fail = (error) ->
+    console.log error
     res.send {ok: false, error: error}
 
   if errors
@@ -23,8 +24,9 @@ exports.post_user_create = (req, res) ->
     else
       new_user.save().then ->
         req.logIn new_user, (err) ->
-          res.send {ok: true, body: {user: new_user.to_json(), redirect_url: '/'}}
-      .catch ->
+          res.send {ok: true, body: {user: new_user.toJSON(), redirect_url: '/'}}
+      .catch (error) ->
+        console.log error
         return fail 'Username already in use!'
 
 exports.post_user_login = (req, res, next) ->
@@ -46,7 +48,7 @@ exports.post_user_login = (req, res, next) ->
       if err?
         return next err
 
-      res.send {ok: true, body: {redirect_url, user: user.to_json()}}
+      res.send {ok: true, body: {redirect_url, user: user.toJSON()}}
   )(req, res, next)
 
 exports.get_user_logout = (req, res) ->

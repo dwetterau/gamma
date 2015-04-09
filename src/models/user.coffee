@@ -5,10 +5,10 @@ module.exports = (sequelize, DataTypes) ->
     username:
       type: DataTypes.STRING
       unique: true
-      validate: {notNull: true}
+      allowNull: false
     password:
       type: DataTypes.STRING
-      validate: {notNull: true}
+      allowNull: false
   , classMethods:
     associate: (models) ->
       User.hasMany(models.Message)
@@ -31,7 +31,7 @@ module.exports = (sequelize, DataTypes) ->
           return next(err)
         next(null, is_match)
 
-    to_json: () ->
+    toJSON: () ->
       return {
         @username
         @id

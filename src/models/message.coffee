@@ -2,10 +2,10 @@ module.exports = (sequelize, DataTypes) ->
   Message = sequelize.define "Message",
     hidden:
       type: DataTypes.BOOLEAN
-      validate: {notNull: true}
+      allowNull: false
     type:
       type: DataTypes.INTEGER
-      validate: {notNull: true}
+      allowNull: false
   , classMethods:
     associate: (models) ->
       Message.belongsTo models.User, {as: 'Author'}
