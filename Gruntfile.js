@@ -34,6 +34,7 @@ module.exports = function(grunt) {
                 files: [
                     'src/models/**/*.coffee',
                     'src/controllers/**/*.coffee',
+                    'src/routes/**/*.coffee',
                     'src/lib/**/*.coffee',
                     'src/index.coffee'
                 ],
