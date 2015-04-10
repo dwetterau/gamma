@@ -44,7 +44,6 @@ exports.post_create_message = (req, res) ->
     # Create the message data
     return MessageData.create({value: req.param('content')})
   .then (messageData) ->
-    console.log "here1"
     newMessageData = messageData
     return Message.create
       hidden: false
@@ -55,11 +54,9 @@ exports.post_create_message = (req, res) ->
       MessageId: int req.param('parentId')
       ThreadId: thread.id
   .then (message) ->
-    console.log "2"
     newMessage = message
     newMessageData.MessageId = message.id
     return newMessageData.save()
   .then ->
-    console.log "3"
     success newMessage
   .catch fail
