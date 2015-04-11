@@ -38,3 +38,23 @@ exports.post_create_thread = (req, res) ->
   .then ->
     res.send {ok: true, body: {thread: newThread.toJSON()}}
   .catch fail
+
+exports.get_messages_for_thread = (req, res) ->
+  req.assert('threadId', 'Invalid thread id.').notEmpty().isInt()
+  fail = (error) ->
+    console.log error
+    res.send {ok: false, error}
+
+  errors = req.validationErrors()
+  if errors?
+    return fail errors
+
+  req.user.getThreads({where: {id: req.param('threadId')}}).then (thread) ->
+    if not thread?
+      throw "User not allowed to retrieve messages for this thread."
+    # Limit the number of messages returned, default to 50 latest
+    console.log thread
+    return thread.getMessages({limit: 50})
+  .then (messages) ->
+    res.send {ok: true, body: {messages}}
+  .catch fail
