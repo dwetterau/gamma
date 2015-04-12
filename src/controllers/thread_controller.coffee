@@ -54,7 +54,19 @@ exports.get_messages_for_thread = (req, res) ->
       throw "User not allowed to retrieve messages for this thread."
     # Limit the number of messages returned, default to 50 latest
     console.log thread
-    return thread.getMessages({limit: 50})
+
+
+    if req.param('limit')
+      limit = Math.min parseInt(req.param('limit'), 10), 50
+    else
+      limit = 50
+
+    if req.param('offset')
+      offset = req.param('offset')
+    else
+      offset = 0
+
+    return thread[0].getMessages({limit, offset, order: 'createdAt DESC'})
   .then (messages) ->
     res.send {ok: true, body: {messages}}
   .catch fail
