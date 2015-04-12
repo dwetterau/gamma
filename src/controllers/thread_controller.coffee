@@ -52,11 +52,9 @@ exports.get_messages_for_thread = (req, res) ->
   req.user.getThreads({where: {id: req.param('threadId')}}).then (thread) ->
     if not thread?
       throw "User not allowed to retrieve messages for this thread."
-    # Limit the number of messages returned, default to 50 latest
-    console.log thread
-
 
     if req.param('limit')
+      # Limit the number of messages returned, default to 50 latest
       limit = Math.min parseInt(req.param('limit'), 10), 50
     else
       limit = 50
