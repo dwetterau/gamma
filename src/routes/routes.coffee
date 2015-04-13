@@ -24,6 +24,7 @@ router.get '/thread/:threadId/messages', auth, thread_controller.get_messages_fo
 
 # Message api routes
 router.post '/message/create', auth, message_controller.post_create_message
+router.delete '/message/:messageId/delete', auth, message_controller.delete_message
 
 router.REGISTERED_ROUTES = {
   '/user/create', '/user/login', '/user/password'

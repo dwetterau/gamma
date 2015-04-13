@@ -60,3 +60,25 @@ exports.post_create_message = (req, res) ->
   .then ->
     success newMessage
   .catch fail
+
+exports.delete_message = (req, res) ->
+  req.assert('messageId', 'Invalid message id.').notEmpty().isInt()
+  fail = (errors) ->
+    res.send {ok: false, error: errors}
+
+  errors = req.validationErrors()
+  if errors?
+    return fail errors
+
+  messageMeta = null
+  Message.find(req.param('messageId')).then (message) ->
+    if message.AuthorId != req.user.id
+      throw 'User not allowed to delete message'
+
+    messageMeta = message
+    return MessageData.destroy({where: {MessageId: message.id}})
+  .then ->
+    return messageMeta.update({hidden: true})
+  .then ->
+    res.send {status: 'ok', body: {}}
+  .catch fail

@@ -63,8 +63,9 @@ exports.get_messages_for_thread = (req, res) ->
       offset = req.param('offset')
     else
       offset = 0
+    where = {hidden: false}
 
-    return thread[0].getMessages({limit, offset, order: 'createdAt DESC'})
+    return thread[0].getMessages({limit, offset, order: 'createdAt DESC', where})
   .then (messages) ->
     res.send {ok: true, body: {messages}}
   .catch fail
