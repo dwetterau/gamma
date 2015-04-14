@@ -1,4 +1,4 @@
-{Thread, User} = require '../models'
+{MessageData, Thread, User} = require '../models'
 
 exports.post_create_thread = (req, res) ->
   req.assert('name', 'Thread name is not valid.').notEmpty()
@@ -65,7 +65,13 @@ exports.get_messages_for_thread = (req, res) ->
       offset = 0
     where = {hidden: false}
 
-    return thread[0].getMessages({limit, offset, order: 'createdAt DESC', where})
+    return thread[0].getMessages {
+      limit
+      offset
+      order: 'createdAt DESC'
+      where
+      include: [MessageData]
+    }
   .then (messages) ->
     res.send {ok: true, body: {messages}}
   .catch fail

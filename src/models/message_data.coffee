@@ -6,5 +6,11 @@ module.exports = (sequelize, DataTypes) ->
   , classMethods:
     associate: (models) ->
       MessageData.belongsTo(models.Message)
-
+  , instanceMethods:
+    toJSON: ->
+      # Convert the byte array to readable text
+      return {
+        @id
+        value: String.fromCharCode.apply(String, @value)
+      }
   return MessageData
