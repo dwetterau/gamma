@@ -33,8 +33,8 @@ module.exports = (sequelize, DataTypes) ->
 
     toJSON: () ->
       return {
-        @username
-        @id
+        username: @username
+        id: @id
       }
 
   return User

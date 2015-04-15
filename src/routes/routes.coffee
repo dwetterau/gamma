@@ -2,6 +2,7 @@ express = require 'express'
 router = express.Router()
 passport_config  = require('../lib/auth')
 
+cursor_controller = require '../controllers/cursor_controller'
 index_controller = require '../controllers/index_controller'
 message_controller = require '../controllers/message_controller'
 thread_controller = require '../controllers/thread_controller'
@@ -25,6 +26,9 @@ router.get '/thread/:threadId/messages', auth, thread_controller.get_messages_fo
 # Message api routes
 router.post '/message/create', auth, message_controller.post_create_message
 router.delete '/message/:messageId/delete', auth, message_controller.delete_message
+
+# Cursor api routes
+router.get '/thread/:threadId/cursor', auth, cursor_controller.get_or_create_cursor
 
 router.REGISTERED_ROUTES = {
   '/user/create', '/user/login', '/user/password'

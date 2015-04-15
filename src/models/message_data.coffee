@@ -10,7 +10,7 @@ module.exports = (sequelize, DataTypes) ->
     toJSON: ->
       # Convert the byte array to readable text
       return {
-        @id
+        id: @id
         value: String.fromCharCode.apply(String, @value)
       }
   return MessageData
