@@ -1,7 +1,7 @@
 {Cursor, Thread, User} = require '../models'
 
 exports.get_or_create_cursor = (req, res) ->
-  req.assert('threadId', 'Thread name is not valid.').notEmpty().isInt()
+  req.assert('threadId', 'Thread id is not valid.').notEmpty().isInt()
   fail = (errors) ->
     res.send {ok: false, error: errors}
   success = (cursor) ->
@@ -38,4 +38,29 @@ exports.get_or_create_cursor = (req, res) ->
           ThreadId: parseInt req.param('threadId'), 10
         })
       .then success
+  .catch fail
+
+exports.post_update_cursor = (req, res) ->
+  req.assert('cursorId', 'Cursor id is not valid').notEmpty().isInt()
+  req.assert('viewTime', 'Cursor view time is not valid').notEmpty().isDate()
+  fail = (errors) ->
+    console.log errors
+    res.send {ok: false, error: errors}
+  success = (cursor) ->
+    res.send {ok: true, body: {cursor}}
+
+  errors = req.validationErrors()
+  if errors?
+    return fail errors
+
+  Cursor.find(req.param('cursorId')).then (cursor) ->
+    if not cursor
+      throw "Could not find cursor."
+
+    if cursor.UserId != req.user.id
+      throw "Could not find cursor."
+
+    cursor.viewTime = new Date(req.param('viewTime'))
+    return cursor.save()
+  .then success
   .catch fail

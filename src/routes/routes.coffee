@@ -29,6 +29,7 @@ router.delete '/message/:messageId/delete', auth, message_controller.delete_mess
 
 # Cursor api routes
 router.get '/thread/:threadId/cursor', auth, cursor_controller.get_or_create_cursor
+router.post '/cursor/:cursorId/update', auth, cursor_controller.post_update_cursor
 
 router.REGISTERED_ROUTES = {
   '/user/create', '/user/login', '/user/password'
