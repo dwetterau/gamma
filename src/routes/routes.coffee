@@ -22,6 +22,7 @@ router.post '/user/password', auth, user_controller.post_change_password
 # Thread api routes
 router.post '/thread/create', auth, thread_controller.post_create_thread
 router.get '/thread/:threadId/messages', auth, thread_controller.get_messages_for_thread
+router.get '/user/threads', auth, thread_controller.get_threads_for_user
 
 # Message api routes
 router.post '/message/create', auth, message_controller.post_create_message

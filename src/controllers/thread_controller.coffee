@@ -75,3 +75,16 @@ exports.get_messages_for_thread = (req, res) ->
   .then (messages) ->
     res.send {ok: true, body: {messages}}
   .catch fail
+
+exports.get_threads_for_user = (req, res) ->
+  fail = (error) ->
+    console.log error
+    res.send {ok: false, error}
+
+  errors = req.validationErrors()
+  if errors?
+    return fail errors
+
+  req.user.getThreads().then (threads) ->
+    res.send {ok: true, body: {threads}}
+  .catch fail
