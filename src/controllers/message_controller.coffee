@@ -58,6 +58,20 @@ exports.post_create_message = (req, res) ->
     newMessageData.MessageId = message.id
     return newMessageData.save()
   .then ->
+    # We need to send a notification to all clients in this thread with this message, and the id of the message
+    # in this thread that comes right before this one in the serializable DB.
+    return Message.find({
+      limit: 1,
+      where:
+        ThreadId: thread.id,
+        id:
+          $lt: newMessage.id
+      order: 'id DESC'
+    })
+  .then (beforeMessage) ->
+    # beforeMessage is either null (no message before) or the message that should
+    # be displayed before this new one. This is used to enforce causal ordering for
+    # the chat clients.
     success newMessage
   .catch fail
 
