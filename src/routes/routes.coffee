@@ -5,6 +5,7 @@ passport_config  = require('../lib/auth')
 cursor_controller = require '../controllers/cursor_controller'
 index_controller = require '../controllers/index_controller'
 message_controller = require '../controllers/message_controller'
+notification_controller = require '../controllers/notification_controller'
 thread_controller = require '../controllers/thread_controller'
 user_controller = require '../controllers/user_controller'
 
@@ -31,6 +32,12 @@ router.delete '/message/:messageId/delete', auth, message_controller.delete_mess
 # Cursor api routes
 router.get '/thread/:threadId/cursor', auth, cursor_controller.get_or_create_cursor
 router.post '/cursor/:cursorId/update', auth, cursor_controller.post_update_cursor
+
+# Notification api routes
+router.get '/notifications', auth, notification_controller.get_listen_notifications
+
+# Start the notification server
+notification_controller.startNotificationServer()
 
 router.REGISTERED_ROUTES = {
   '/user/create', '/user/login', '/user/password'

@@ -1,4 +1,5 @@
 {Message, MessageData, User} = require '../models'
+notificationController = require './notification_controller'
 
 exports.post_create_message = (req, res) ->
   req.assert('type', 'Invalid message type.').notEmpty().isInt()
@@ -72,6 +73,7 @@ exports.post_create_message = (req, res) ->
     # beforeMessage is either null (no message before) or the message that should
     # be displayed before this new one. This is used to enforce causal ordering for
     # the chat clients.
+    notificationController.newMessageNotification newMessage, newMessageData, beforeMessage, thisThread
     success newMessage
   .catch fail
 
