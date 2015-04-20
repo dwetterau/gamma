@@ -1,4 +1,5 @@
 {Thread, User} = require '../models'
+{constants} = require '../lib/common'
 
 # This is the in-memory map of notifications for sending out in real-time
 _pendingNotifications = {}
@@ -22,8 +23,10 @@ _pushPendingNotifications = ->
   _listenLoopFunc()
 
 exports.newMessageNotification = (message, messageData, previousMessage, threadId) ->
-  # TODO Move this type constant somewhere
-  notification = {type: 'New Message', body: {message, messageData, previousMessage}}
+  notification = {
+    type: constants.NOTIFICATION_TYPE_NEW_MESSAGE,
+    body: {message, messageData, previousMessage}
+  }
   Thread.find({
     where: {id: threadId},
     include: [{model: User, as: 'Members'}]})
@@ -53,7 +56,7 @@ _listenLoopFunc = ->
   _notifyFunc()
   listenLoop = setTimeout ->
     _listenLoopFunc()
-  , 10000 # TODO Move this constant
+  , constants.NOTIFICATION_LOOP_TIMEOUT
 
 exports.startNotificationServer = ->
   _listenLoopFunc()
