@@ -1,5 +1,6 @@
 React = require 'react'
 userSessionStore = require '../stores/user_session_store'
+notificationStore = require '../stores/notification_store'
 
 Home = React.createClass
   getInitialState: ->

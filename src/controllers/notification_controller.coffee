@@ -46,7 +46,7 @@ _notifyFunc = ->
     if userId of _currentListeners and notifications.length > 0
       for res in _currentListeners[userId]
         try
-          res.send notifications
+          res.send {ok: true, body: notifications}
           _pendingNotifications[userId] = []
         catch
           # Listener stopped, run the unable to push notification routine
