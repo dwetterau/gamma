@@ -1,6 +1,7 @@
 React = require 'react'
 userSessionStore = require '../stores/user_session_store'
 notificationStore = require '../stores/notification_store'
+messageStore = require '../stores/message_store'
 
 Home = React.createClass
   getInitialState: ->
@@ -9,14 +10,19 @@ Home = React.createClass
       return {user}
     return {}
 
-  onUserSessionUpdate: (user) ->
+  _onUserSessionUpdate: (user) ->
     @setState {user}
 
+  _onMessageStoreUpdate: (messages) ->
+    console.log messages
+
   componentDidMount: ->
-    @unsubscribeFromUserSessionStore = userSessionStore.listen(@onUserSessionUpdate)
+    @unsubscribeFromUserSessionStore = userSessionStore.listen(@_onUserSessionUpdate)
+    @unsubscribeFromMessageStore = messageStore.listen(@_onMessageStoreUpdate)
 
   componentWillUnmount: ->
     @unsubscribeFromUserSessionStore()
+    @unsubscribeFromMessageStore()
 
   render: ->
     return (

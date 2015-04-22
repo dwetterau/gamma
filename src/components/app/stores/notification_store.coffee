@@ -1,4 +1,5 @@
 Reflux = require 'reflux'
+constants = require '../../../lib/common/constants'
 
 NotificationStore = Reflux.createStore
 
@@ -13,10 +14,9 @@ NotificationStore = Reflux.createStore
         @_add_notifications response.body
         @_request_notifications()
       else
-        # TODO: Move constant
         setTimeout =>
           @_request_notifications()
-        , 5000
+        , constants.NOTIFICATION_RETRY_TIMEOUT
     )
 
   _add_notifications: (notifications) ->
@@ -25,7 +25,7 @@ NotificationStore = Reflux.createStore
     @_triggerStateChange()
 
   _triggerStateChange: ->
-    console.log (@notifications)
+    console.log "Triggering!"
     @trigger @notifications
 
 module.exports =  NotificationStore
