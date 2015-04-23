@@ -1,10 +1,13 @@
 Reflux = require 'reflux'
 constants = require '../../../lib/common/constants'
+{newMessage} = require '../actions'
 
 NotificationStore = Reflux.createStore
 
   init: ->
-    @notifications = []
+    @state = {
+      threadUnread: {}
+    }
     # Start listening for notifications
     @_request_notifications()
 
@@ -20,9 +23,17 @@ NotificationStore = Reflux.createStore
     )
 
   _add_notifications: (notifications) ->
+    shouldTrigger = false
     for notification in notifications
-      @notifications.push notification
-    @_triggerStateChange()
+      if notification.type == constants.NOTIFICATION_TYPE_NEW_MESSAGE
+        threadId = notification.body.message.ThreadId
+        if not @state.threadUnread[threadId]
+          @state.threadUnread[threadId] = true
+          shouldTrigger = true
+        newMessage(notification.body)
+
+    if shouldTrigger
+      @_triggerStateChange()
 
   _triggerStateChange: ->
     console.log "Triggering!"

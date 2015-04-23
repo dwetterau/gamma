@@ -1,26 +1,22 @@
 Reflux = require 'reflux'
 constants = require '../../../lib/common/constants'
-notificationStore = require './notification_store'
+{newMessage} = require '../actions'
 
 MessageStore = Reflux.createStore
-
+  listenables: [
+    {newMessage}
+  ]
   init: ->
     @messages = {}
-    # Start listening for notifications
-    notificationStore.listen @_onNotificationStoreUpdate
 
-  _onNotificationStoreUpdate: (notifications) ->
-    for notification in notifications
-      shouldTrigger = false
-      if notification.type == constants.NOTIFICATION_TYPE_NEW_MESSAGE
-        {message, messageData, previousMessage} = notification.body
-        if message.id not of @messages
-          message.MessageDatum = messageData
-          @messages[message.id] = {message, messageData, previousMessage}
-          shouldTrigger = true
+  onNewMessage: (body) ->
+    {message, messageData, previousMessage} = body
+    if previousMessage.id not of @messages
+      # Insert a temporary entry for the previous message with metadata
+      @messages[previousMessage.id] = {metadata: previousMessage}
 
-    if shouldTrigger
-      @_triggerStateChange()
+    @messages[message.id] = {metadata: message, data: messageData, previousId: previousMessage.id}
+    @_triggerStateChange()
 
   _triggerStateChange: ->
     @trigger @messages
