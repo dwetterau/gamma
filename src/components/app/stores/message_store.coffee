@@ -1,6 +1,7 @@
 Reflux = require 'reflux'
 constants = require '../../../lib/common/constants'
-{newMessage} = require '../actions'
+{newMessage, newThread} = require '../actions'
+threadStore = require './thread_store'
 
 MessageStore = Reflux.createStore
   listenables: [
@@ -11,6 +12,9 @@ MessageStore = Reflux.createStore
 
   onNewMessage: (body) ->
     {message, messageData, previousMessage} = body
+    if not threadStore.hasThread message.ThreadId
+      newThread(message.id)
+
     if previousMessage.id not of @messages
       # Insert a temporary entry for the previous message with metadata
       @messages[previousMessage.id] = {metadata: previousMessage}

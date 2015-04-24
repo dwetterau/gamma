@@ -10,3 +10,6 @@ exports.addUserSession = Reflux.createAction()
 
 # Used to add a new message
 exports.newMessage = Reflux.createAction()
+
+# Used to add a new thread to the mapping
+exports.newThread = Reflux.createAction()
