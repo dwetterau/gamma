@@ -1,6 +1,6 @@
 Reflux = require 'reflux'
 constants = require '../../../lib/common/constants'
-{newMessage, newThread} = require '../actions'
+{newMessage} = require '../actions'
 threadStore = require './thread_store'
 
 MessageStore = Reflux.createStore
@@ -12,17 +12,23 @@ MessageStore = Reflux.createStore
 
   onNewMessage: (body) ->
     {message, messageData, previousMessage} = body
-    if not threadStore.hasThread message.ThreadId
-      newThread(message.id)
-
     if previousMessage.id not of @messages
       # Insert a temporary entry for the previous message with metadata
-      @messages[previousMessage.id] = {metadata: previousMessage}
+      @messages[previousMessage.id] = {metadata: previousMessage, full: false}
 
-    @messages[message.id] = {metadata: message, data: messageData, previousId: previousMessage.id}
-    @_triggerStateChange()
+    @messages[message.id] = {metadata: message, data: messageData, previousId: previousMessage.id, full: true}
+    @_triggerStateChange(message.id)
 
-  _triggerStateChange: ->
-    @trigger @messages
+  hasFullMessage: (messageId) ->
+    return messageId of @messages and @messages[messageId].full
+
+  getMessage: (messageId) ->
+    if messageId not of @messages
+      return null
+
+    return @messages[messageId]
+
+  _triggerStateChange: (messageId) ->
+    @trigger messageId
 
 module.exports = MessageStore

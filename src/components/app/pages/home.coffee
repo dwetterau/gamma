@@ -2,6 +2,7 @@ React = require 'react'
 userSessionStore = require '../stores/user_session_store'
 notificationStore = require '../stores/notification_store'
 messageStore = require '../stores/message_store'
+threadStore = require '../stores/thread_store'
 
 Home = React.createClass
   getInitialState: ->
@@ -13,12 +14,16 @@ Home = React.createClass
   _onUserSessionUpdate: (user) ->
     @setState {user}
 
-  _onMessageStoreUpdate: (messages) ->
-    console.log messages
+  _onMessageStoreUpdate: (messageId) ->
+    console.log messageStore.getMessage(messageId)
+
+  _onThreadStoreUpdate: (threadId) ->
+    console.log threadStore.getTree(threadId)
 
   componentDidMount: ->
     @unsubscribeFromUserSessionStore = userSessionStore.listen(@_onUserSessionUpdate)
     @unsubscribeFromMessageStore = messageStore.listen(@_onMessageStoreUpdate)
+    @unsubscribeFromThreadStore = threadStore.listen(@_onThreadStoreUpdate)
 
   componentWillUnmount: ->
     @unsubscribeFromUserSessionStore()

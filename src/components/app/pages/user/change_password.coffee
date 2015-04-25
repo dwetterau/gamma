@@ -1,6 +1,6 @@
 React = require 'react'
 FormPage = require './form_page'
-Notifier = require '../../utils/notifier'
+Notifier = require '../../lib/notifier'
 
 ChangePassword = React.createClass
 

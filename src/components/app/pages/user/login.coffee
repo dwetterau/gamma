@@ -2,7 +2,7 @@ React = require 'react'
 Router = require 'react-router'
 FormPage = require './form_page'
 {userLoginRequest} = require '../../actions'
-Notifier = require '../../utils/notifier'
+Notifier = require '../../lib/notifier'
 
 Login = React.createClass
 

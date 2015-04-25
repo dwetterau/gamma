@@ -3,7 +3,7 @@ Router = require 'react-router'
 {MenuItem, LeftNav} = require 'material-ui'
 userSessionStore = require '../stores/user_session_store'
 {userLogoutRequest} = require '../actions'
-Notifier = require '../utils/notifier'
+Notifier = require '../lib/notifier'
 
 LeftNavigation = React.createClass
 
