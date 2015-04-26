@@ -4,6 +4,9 @@ notificationStore = require '../stores/notification_store'
 messageStore = require '../stores/message_store'
 threadStore = require '../stores/thread_store'
 
+# Actions this page can make
+{loadThreads} = require '../actions'
+
 Home = React.createClass
   getInitialState: ->
     user = userSessionStore.getUser()
@@ -22,8 +25,10 @@ Home = React.createClass
 
   componentDidMount: ->
     @unsubscribeFromUserSessionStore = userSessionStore.listen(@_onUserSessionUpdate)
-    @unsubscribeFromMessageStore = messageStore.listen(@_onMessageStoreUpdate)
     @unsubscribeFromThreadStore = threadStore.listen(@_onThreadStoreUpdate)
+
+    # Load all threads for the user
+    loadThreads()
 
   componentWillUnmount: ->
     @unsubscribeFromUserSessionStore()

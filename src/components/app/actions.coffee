@@ -13,3 +13,12 @@ exports.newMessage = Reflux.createAction()
 
 # Used to add a new thread to the mapping
 exports.newThread = Reflux.createAction()
+
+# Used to tell the thread store to load all threads for a user
+exports.loadThreads = Reflux.createAction()
+
+# Used to load all existing messages for a thread
+exports.loadThreadMessages = Reflux.createAction()
+
+# Used to load many messages at once into the message and thread stores
+exports.bulkLoadMessages = Reflux.createAction()

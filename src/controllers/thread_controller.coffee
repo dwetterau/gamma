@@ -49,15 +49,20 @@ exports.get_messages_for_thread = (req, res) ->
   if errors?
     return fail errors
 
+  if req.param('limit')
+    # Limit the number of messages returned, default to 50 latest
+    limit = Math.min parseInt(req.param('limit'), 10), 50
+  else
+    limit = 50
+
+  # This is to get the id of the message before the first one
+  # that we will return.
+  limit++
+
   req.user.getThreads({where: {id: req.param('threadId')}}).then (thread) ->
     if not thread?
       throw "User not allowed to retrieve messages for this thread."
 
-    if req.param('limit')
-      # Limit the number of messages returned, default to 50 latest
-      limit = Math.min parseInt(req.param('limit'), 10), 50
-    else
-      limit = 50
 
     if req.param('offset')
       offset = req.param('offset')
@@ -73,7 +78,20 @@ exports.get_messages_for_thread = (req, res) ->
       include: [MessageData]
     }
   .then (messages) ->
-    res.send {ok: true, body: {messages}}
+    messagesToSend = new Array(limit - 1)
+    for i in [0...limit - 1]
+      message = messages[i]
+      # TODO: Figure out a better (de)serialization story for message data
+      message.MessageDatum.value =
+        String.fromCharCode.apply(null, new Uint16Array(message.MessageDatum.value))
+
+      # The previous message is the next message in the list because of the serializable
+      # setting of the DB.
+      previousMessageId = messages[i + 1].id
+
+      messagesToSend[i] = {message, previousMessageId}
+
+    res.send {ok: true, body: {messages: messagesToSend}}
   .catch fail
 
 exports.get_threads_for_user = (req, res) ->

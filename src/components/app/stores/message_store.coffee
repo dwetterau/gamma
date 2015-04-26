@@ -1,11 +1,12 @@
 Reflux = require 'reflux'
 constants = require '../../../lib/common/constants'
-{newMessage} = require '../actions'
+{newMessage, bulkLoadMessages} = require '../actions'
 threadStore = require './thread_store'
 
 MessageStore = Reflux.createStore
   listenables: [
     {newMessage}
+    {bulkLoadMessages}
   ]
   init: ->
     @messages = {}
@@ -16,8 +17,27 @@ MessageStore = Reflux.createStore
       # Insert a temporary entry for the previous message with metadata
       @messages[previousMessage.id] = {metadata: previousMessage, full: false}
 
-    @messages[message.id] = {metadata: message, data: messageData, previousId: previousMessage.id, full: true}
+    @messages[message.id] = {metadata: message, data: messageData, previousMessageId: previousMessage.id, full: true}
     @_triggerStateChange(message.id)
+
+  onBulkLoadMessages: (messages) ->
+    for messageObject in messages
+      {message, previousMessageId} = messageObject
+
+      if previousMessageId not of @messages
+        # Put a stub entry for the previousMessageId
+        @messages[previousMessageId] = {full: false}
+
+      data = message.MessageDatum
+      delete message.MessageDatum
+
+      @messages[message.id] = {
+        metadata: message,
+        data,
+        previousMessageId,
+        full: true
+      }
+      @_triggerStateChange(message.id)
 
   hasFullMessage: (messageId) ->
     return messageId of @messages and @messages[messageId].full

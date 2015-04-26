@@ -12,7 +12,7 @@ NotificationStore = Reflux.createStore
     @_request_notifications()
 
   _request_notifications: ->
-    $.get('/notifications', (response) =>
+    $.get('/api/notifications', (response) =>
       if response.ok
         @_add_notifications response.body
         @_request_notifications()

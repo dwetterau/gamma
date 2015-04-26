@@ -5,7 +5,7 @@ Notifier = require '../../lib/notifier'
 ChangePassword = React.createClass
 
   _onSubmit: (fields) ->
-    $.post('/user/password', fields).done (response) =>
+    $.post('/api/user/password', fields).done (response) =>
       if response.ok
         Notifier.info 'Password changed!'
         @_clearFields fields
