@@ -20,8 +20,10 @@ Home = React.createClass
   _onMessageStoreUpdate: (messageId) ->
     console.log messageStore.getMessage(messageId)
 
-  _onThreadStoreUpdate: (threadId) ->
-    console.log threadStore.getTree(threadId)
+  _onThreadStoreUpdate: (threadIds) ->
+    if 'threadNames' not of @state
+      threadNames = threadStore.getThreadNames()
+      @setState {threadNames}
 
   componentDidMount: ->
     @unsubscribeFromUserSessionStore = userSessionStore.listen(@_onUserSessionUpdate)
@@ -32,7 +34,13 @@ Home = React.createClass
 
   componentWillUnmount: ->
     @unsubscribeFromUserSessionStore()
-    @unsubscribeFromMessageStore()
+    @unsubscribeFromThreadStore()
+
+  _renderThreadNames: ->
+    names = []
+    for thread, object of @state.threadNames
+      names.push(<div key={thread}>{object.displayName}</div>)
+    return names
 
   render: ->
     return (
@@ -41,6 +49,7 @@ Home = React.createClass
           <h1>Welcome</h1>
         </div>
         Hello {if @state.user then @state.user.username else "World"}!
+        {@_renderThreadNames()}
       </div>
     )
 
