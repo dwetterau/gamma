@@ -1,8 +1,8 @@
 React = require 'react'
-userSessionStore = require '../stores/user_session_store'
+cursorStore = require '../stores/cursor_store'
 notificationStore = require '../stores/notification_store'
-messageStore = require '../stores/message_store'
 threadStore = require '../stores/thread_store'
+userSessionStore = require '../stores/user_session_store'
 
 # Actions this page can make
 {loadThreads} = require '../actions'
@@ -17,24 +17,26 @@ Home = React.createClass
   _onUserSessionUpdate: (user) ->
     @setState {user}
 
-  _onMessageStoreUpdate: (messageId) ->
-    console.log messageStore.getMessage(messageId)
-
   _onThreadStoreUpdate: (threadIds) ->
     if 'threadNames' not of @state
       threadNames = threadStore.getThreadNames()
       @setState {threadNames}
 
+  _onCursorStoreUpdate: (threadId) ->
+    console.log "Got cursor for threadId: ", threadId, cursorStore.getCursor(threadId)
+
   componentDidMount: ->
-    @unsubscribeFromUserSessionStore = userSessionStore.listen(@_onUserSessionUpdate)
+    @unsubscribeFromCursorStore = cursorStore.listen(@_onCursorStoreUpdate)
     @unsubscribeFromThreadStore = threadStore.listen(@_onThreadStoreUpdate)
+    @unsubscribeFromUserSessionStore = userSessionStore.listen(@_onUserSessionUpdate)
 
     # Load all threads for the user
     loadThreads()
 
   componentWillUnmount: ->
-    @unsubscribeFromUserSessionStore()
+    @unsubscribeFromCursorStore()
     @unsubscribeFromThreadStore()
+    @unsubscribeFromUserSessionStore()
 
   _renderThreadNames: ->
     names = []

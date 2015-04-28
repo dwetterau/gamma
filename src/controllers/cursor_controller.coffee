@@ -5,7 +5,6 @@ exports.get_or_create_cursor = (req, res) ->
   fail = (errors) ->
     res.send {ok: false, error: errors}
   success = (cursor) ->
-    console.log cursor
     res.send {ok: true, body: {cursor}}
 
   errors = req.validationErrors()
