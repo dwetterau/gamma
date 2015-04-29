@@ -1,5 +1,6 @@
 React = require 'react'
 cursorStore = require '../stores/cursor_store'
+messageStore = require '../stores/message_store'
 notificationStore = require '../stores/notification_store'
 threadStore = require '../stores/thread_store'
 userSessionStore = require '../stores/user_session_store'
@@ -38,9 +39,26 @@ Home = React.createClass
     @unsubscribeFromThreadStore()
     @unsubscribeFromUserSessionStore()
 
-  _renderThreadNames: ->
+  _renderMessage: (message) ->
+    {metadata, data} = message
+    <div key={'mm' + metadata.id}>{metadata.AuthorId}: {data.value}</div>
+
+  _renderThreadNamesAndMessages: ->
     names = []
+    messages = []
     for thread, object of @state.threadNames
+      messageTree = threadStore.getTree thread
+      # Perform a traversal on the tree and print out all the messages
+      queue = [messageTree]
+      while queue.length and queue[0]
+        debugger
+        messageNode = queue.shift()
+        message = messageStore.getMessage(messageNode.id)
+        messages.push @_renderMessage message
+        for node in messageNode.children
+          queue.push node
+
+
       names.push(<div key={thread}>{object.displayName}</div>)
     return names
 
@@ -51,7 +69,7 @@ Home = React.createClass
           <h1>Welcome</h1>
         </div>
         Hello {if @state.user then @state.user.username else "World"}!
-        {@_renderThreadNames()}
+        {@_renderThreadNamesAndMessages()}
       </div>
     )
 
