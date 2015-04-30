@@ -11,9 +11,14 @@ userSessionStore = require '../stores/user_session_store'
 Home = React.createClass
   getInitialState: ->
     user = userSessionStore.getUser()
+    state = {
+      threadTrees: {}
+      messages: {}
+    }
     if user?
-      return {user}
-    return {}
+      state.user = user
+
+    return state
 
   _onUserSessionUpdate: (user) ->
     @setState {user}
@@ -22,12 +27,25 @@ Home = React.createClass
     if 'threadNames' not of @state
       threadNames = threadStore.getThreadNames()
       @setState {threadNames}
+    else
+      threadTrees = @state.threadTrees
+      for threadId in threadIds
+        threadTrees[threadId] = threadStore.getTree threadId
+      @setState {threadTrees}
+
 
   _onCursorStoreUpdate: (threadId) ->
     console.log "Got cursor for threadId: ", threadId, cursorStore.getCursor(threadId)
 
+  _onMessageStoreUpdate: (messageId) ->
+    # TODO: Do something smarter here.
+    messages = @state.messages
+    messages[messageId] = messageStore.getMessage(messageId)
+    @setState {messages}
+
   componentDidMount: ->
     @unsubscribeFromCursorStore = cursorStore.listen(@_onCursorStoreUpdate)
+    @unsubscribeFromMessageStore = messageStore.listen(@_onMessageStoreUpdate)
     @unsubscribeFromThreadStore = threadStore.listen(@_onThreadStoreUpdate)
     @unsubscribeFromUserSessionStore = userSessionStore.listen(@_onUserSessionUpdate)
 
@@ -44,23 +62,28 @@ Home = React.createClass
     <div key={'mm' + metadata.id}>{metadata.AuthorId}: {data.value}</div>
 
   _renderThreadNamesAndMessages: ->
-    names = []
-    messages = []
+    elements = []
     for thread, object of @state.threadNames
-      messageTree = threadStore.getTree thread
+      if not @state.threadTrees or thread not of @state.threadTrees
+        continue
       # Perform a traversal on the tree and print out all the messages
-      queue = [messageTree]
-      while queue.length and queue[0]
-        debugger
+      queue = []
+      for node in @state.threadTrees[thread].children
+        queue.push node
+      while queue.length
         messageNode = queue.shift()
-        message = messageStore.getMessage(messageNode.id)
-        messages.push @_renderMessage message
+
+        # If the message isn't loaded yet, don't keep traversing
+        if messageNode.id not of @state.messages
+          continue
+        message = @state.messages[messageNode.id]
+        elements.push @_renderMessage message
         for node in messageNode.children
           queue.push node
 
+      elements.push(<div key={thread}>{object.displayName}</div>)
 
-      names.push(<div key={thread}>{object.displayName}</div>)
-    return names
+    return elements
 
   render: ->
     return (
