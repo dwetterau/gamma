@@ -3,7 +3,6 @@ Router = require 'react-router'
 RouteHandler = Router.RouteHandler
 
 cursorStore = require '../stores/cursor_store'
-messageStore = require '../stores/message_store'
 notificationStore = require '../stores/notification_store'
 threadStore = require '../stores/thread_store'
 userSessionStore = require '../stores/user_session_store'
@@ -53,7 +52,6 @@ Home = React.createClass
 
   componentDidMount: ->
     @unsubscribeFromCursorStore = cursorStore.listen(@_onCursorStoreUpdate)
-    @unsubscribeFromMessageStore = messageStore.listen(@_onMessageStoreUpdate)
     @unsubscribeFromThreadStore = threadStore.listen(@_onThreadStoreUpdate)
     @unsubscribeFromUserSessionStore = userSessionStore.listen(@_onUserSessionUpdate)
     @unsubscribeFromUserStore = userStore.listen(@_onUserUpdate)

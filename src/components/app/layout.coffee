@@ -25,7 +25,7 @@ Layout = React.createClass
 
           <LeftNavigation ref="leftNavigation" />
 
-        <RouteHandler {...@props}/>
+          <RouteHandler {...@props}/>
 
 
         </AppCanvas>
