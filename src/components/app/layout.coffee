@@ -24,7 +24,7 @@ Layout = React.createClass
 
         <LeftNavigation ref="leftNavigation" />
 
-        <RouteHandler />
+        <RouteHandler {...@props}/>
 
         <div className="footer mui-dark-theme">
           <div className="container text-center">

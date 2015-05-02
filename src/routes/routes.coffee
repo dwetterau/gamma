@@ -15,9 +15,9 @@ auth = passport_config.isAuthenticated
 router.get '/', index_controller.get_index
 
 # User routes
-router.post '/user/create', user_controller.post_user_create
-router.post '/user/login', user_controller.post_user_login
-router.get '/user/logout', user_controller.get_user_logout
+router.post '/api/user/create', user_controller.post_user_create
+router.post '/api/user/login', user_controller.post_user_login
+router.get '/api/user/logout', user_controller.get_user_logout
 router.post '/api/user/password', auth, user_controller.post_change_password
 
 # Thread api routes
@@ -39,9 +39,5 @@ router.get '/api/notifications', auth, notification_controller.get_listen_notifi
 
 # Start the notification server
 notification_controller.startNotificationServer()
-
-router.REGISTERED_ROUTES = {
-  '/user/create', '/user/login', '/user/password'
-}
 
 module.exports = router

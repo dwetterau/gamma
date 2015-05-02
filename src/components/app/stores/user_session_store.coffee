@@ -15,7 +15,7 @@ UserSessionStore = Reflux.createStore
 
   onUserLoginRequest: (fields) ->
     # Make the login request, on the success update the stuff
-    $.post('/user/login', fields).done (response) ->
+    $.post('/api/user/login', fields).done (response) ->
       if response.ok
         userLoginRequest.completed(response.body)
       else
@@ -35,7 +35,7 @@ UserSessionStore = Reflux.createStore
     # Make the request to create the user, after logging out the current one
     @user = null
     @_triggerStateChange()
-    $.post('/user/create', fields).done (response) ->
+    $.post('/api/user/create', fields).done (response) ->
       if response.ok
         userCreateRequest.completed response.body
       else
@@ -53,7 +53,7 @@ UserSessionStore = Reflux.createStore
 
   onUserLogoutRequest: ->
     # Make the request to logout
-    $.get('/user/logout').done (response) ->
+    $.get('/api/user/logout').done (response) ->
       if response.ok
         userLogoutRequest.completed(response.body)
       else

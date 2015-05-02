@@ -18,10 +18,10 @@ App = ->
     routes: AppRoutes
     location: Router.HistoryLocation
     scrollBehavior: Router.ScrollToTopBehavior
-  ).run (Handler) ->
+  ).run (Handler, state) ->
     # This is called whenever the URL is changed.
     # Handler is the ReactComponent class that will be rendered
-    React.render React.createElement(Handler), document.body
+    React.render React.createElement(Handler, {params: state.params}), document.body
 
 _processProps = (Actions) ->
   propsFromServer = JSON.parse($('#react_app_props').html())

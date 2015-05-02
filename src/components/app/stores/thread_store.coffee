@@ -1,6 +1,6 @@
 Reflux = require 'reflux'
 constants = require '../../../lib/common/constants'
-{newMessage, loadThreads, loadThreadMessages, bulkLoadMessages} = require '../actions'
+{newMessage, loadThreads, bulkLoadMessages} = require '../actions'
 MessageNode = require '../lib/message_node'
 Notifier = require '../lib/notifier'
 
@@ -8,7 +8,6 @@ ThreadStore = Reflux.createStore
   listenables: [
     {newMessage}
     {loadThreads}
-    {loadThreadMessages}
     {bulkLoadMessages}
   ]
   init: ->
@@ -68,7 +67,7 @@ ThreadStore = Reflux.createStore
         shouldTrigger = false
         if thread.id not of @data
           # We need to load the messages for this thread too
-          loadThreadMessages(thread.id)
+          @_loadThreadMessages(thread.id)
           triggerIds.push thread.id
         @data[thread.id] = thread
 
@@ -77,7 +76,7 @@ ThreadStore = Reflux.createStore
     )
 
   # Load the messages for the specified thread
-  onLoadThreadMessages: (threadId) ->
+  _loadThreadMessages: (threadId) ->
     $.get('/api/thread/' + threadId + '/messages', (response) =>
       if not response.ok
         return Notifier.error(response.error)

@@ -78,8 +78,8 @@ exports.get_messages_for_thread = (req, res) ->
       include: [MessageData]
     }
   .then (messages) ->
-    messagesToSend = new Array(limit - 1)
-    for i in [0...limit - 1]
+    messagesToSend = new Array(Math.min(messages.length, limit - 1))
+    for i in [0...messagesToSend.length]
       message = messages[i]
       # TODO: Figure out a better (de)serialization story for message data
       message.MessageDatum.value =
@@ -87,7 +87,10 @@ exports.get_messages_for_thread = (req, res) ->
 
       # The previous message is the next message in the list because of the serializable
       # setting of the DB.
-      previousMessageId = messages[i + 1].id
+      if i + 1 < messages.length
+        previousMessageId = messages[i + 1].id
+      else
+        previousMessageId = -1
 
       messagesToSend[i] = {message, previousMessageId}
 

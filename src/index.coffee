@@ -58,7 +58,7 @@ app.use '/', all_routes
 
 # Handle the HTML5 links the right way
 app.use (req, res, next) ->
-  if req.path of all_routes.REGISTERED_ROUTES
+  if req.path.indexOf '/api' != 0
     return index_controller.get_index req, res
 
   # catch 404 and forward to error handler
