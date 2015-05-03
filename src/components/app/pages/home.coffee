@@ -11,6 +11,9 @@ userSessionStore = require '../stores/user_session_store'
 {loadThreads} = require '../actions'
 
 Home = React.createClass
+
+  mixins: [Router.Navigation]
+
   getInitialState: ->
     user = userSessionStore.getUser()
     state = {
@@ -52,6 +55,21 @@ Home = React.createClass
     @unsubscribeFromThreadStore()
     @unsubscribeFromUserSessionStore()
 
+  _switchThread: (threadId) ->
+    @transitionTo '/thread/' + threadId
+
+  _renderThreadSidebar: ->
+    threads = []
+    for threadId of @state.threadNames
+      threads.push(
+        <div onClick={@_switchThread.bind(this, threadId)} key={"tn" + threadId}>
+          {@state.threadNames[threadId].displayName}
+        </div>
+      )
+    <div className="col-sm-2">
+      {threads}
+    </div>
+
   _renderThreadComponent: ->
     threadId = @props.params.threadId
     if threadId of @state.threadTrees
@@ -61,7 +79,7 @@ Home = React.createClass
       }
       <RouteHandler {...threadProps}/>
     else
-      <div>Thread not found!</div>
+      <div className="col-sm-10">Thread not found!</div>
 
   render: ->
     return (
@@ -69,7 +87,10 @@ Home = React.createClass
         <div className="page-header">
           <h1>Welcome</h1>
         </div>
-        {@_renderThreadComponent()}
+        <div className="component">
+          {@_renderThreadSidebar()}
+          {@_renderThreadComponent()}
+        </div>
       </div>
     )
 

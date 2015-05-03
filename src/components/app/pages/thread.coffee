@@ -1,11 +1,8 @@
 React = require 'react'
-Router = require 'react-router'
 
 messageStore = require '../stores/message_store'
 
 Thread = React.createClass
-
-  mixins: [Router.State]
 
   getInitialState: ->
     return {
@@ -16,7 +13,8 @@ Thread = React.createClass
     @unsubscribeFromMessageStore = messageStore.listen(@_onMessageStoreUpdate)
 
     # Load all messages that we need from the messageStore
-    @setState {messages: messageStore.getMessagesForThread(@props.threadId)}
+    messages = messageStore.getMessagesForThread @props.threadId
+    @setState {messages}
 
   componentWillUnmount: ->
     @unsubscribeFromMessageStore()
@@ -55,7 +53,7 @@ Thread = React.createClass
 
   render: ->
     threadId = @props.threadId
-    <div>
+    <div className="col-sm-10">
       Thread Page id={threadId}
       {@_renderMessages()}
     </div>

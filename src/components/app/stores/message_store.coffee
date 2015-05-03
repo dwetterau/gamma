@@ -59,11 +59,12 @@ MessageStore = Reflux.createStore
 
   getMessagesForThread: (threadId) ->
     if threadId not of @threadMessageMap
-      return []
+      return {}
 
     messages = {}
-    for messageId of @threadMessageMap[threadId]
+    for messageId in @threadMessageMap[threadId]
       messages[messageId] = @getMessage(messageId)
+    return messages
 
   _triggerStateChange: (messageId) ->
     @trigger messageId
