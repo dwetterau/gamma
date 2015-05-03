@@ -10,6 +10,13 @@ MessageStore = Reflux.createStore
   ]
   init: ->
     @messages = {}
+    @threadMessageMap = {}
+
+  _addMessageToThread: (messageId, threadId) ->
+    if threadId not of @threadMessageMap
+      @threadMessageMap[threadId] = []
+
+    @threadMessageMap[threadId].push messageId
 
   onNewMessage: (body) ->
     {message, messageData, previousMessage} = body
@@ -18,6 +25,7 @@ MessageStore = Reflux.createStore
       @messages[previousMessage.id] = {metadata: previousMessage, full: false}
 
     @messages[message.id] = {metadata: message, data: messageData, previousMessageId: previousMessage.id, full: true}
+    @_addMessageToThread(message.id, message.ThreadId)
     @_triggerStateChange(message.id)
 
   onBulkLoadMessages: (messages) ->
@@ -37,6 +45,7 @@ MessageStore = Reflux.createStore
         previousMessageId,
         full: true
       }
+      @_addMessageToThread(message.id, message.ThreadId)
       @_triggerStateChange(message.id)
 
   hasFullMessage: (messageId) ->
@@ -47,6 +56,14 @@ MessageStore = Reflux.createStore
       return null
 
     return @messages[messageId]
+
+  getMessagesForThread: (threadId) ->
+    if threadId not of @threadMessageMap
+      return []
+
+    messages = {}
+    for messageId of @threadMessageMap[threadId]
+      messages[messageId] = @getMessage(messageId)
 
   _triggerStateChange: (messageId) ->
     @trigger messageId

@@ -15,6 +15,9 @@ Thread = React.createClass
   componentDidMount: ->
     @unsubscribeFromMessageStore = messageStore.listen(@_onMessageStoreUpdate)
 
+    # Load all messages that we need from the messageStore
+    @setState {messages: messageStore.getMessagesForThread(@props.threadId)}
+
   componentWillUnmount: ->
     @unsubscribeFromMessageStore()
 
@@ -24,9 +27,12 @@ Thread = React.createClass
     messages[messageId] = messageStore.getMessage(messageId)
     @setState {messages}
 
+  # Return if we have the message
+  _hasMessage: (messageId) ->
+    return messageId of @state.messages
 
-  _renderMessage: (message) ->
-    {metadata, data} = message
+  _renderMessage: (messageId) ->
+    {metadata, data} = @state.messages[messageId]
     <div key={'mm' + metadata.id}>
       {metadata.AuthorId}: {data.value}
     </div>
@@ -34,17 +40,14 @@ Thread = React.createClass
   _renderMessages: ->
     elements = []
     # Perform a traversal on the tree and print out all the messages
-    queue = []
-    for node in @props.tree
-      queue.push node
+    queue = (node for node in @props.tree.children)
     while queue.length
       messageNode = queue.shift()
 
       # If the message isn't loaded yet, don't keep traversing
-      if messageNode.id not of @state.messages
+      if not @_hasMessage messageNode.id
         continue
-      message = @state.messages[messageNode.id]
-      elements.push @_renderMessage message
+      elements.push @_renderMessage messageNode.id
       for node in messageNode.children
         queue.push node
 
