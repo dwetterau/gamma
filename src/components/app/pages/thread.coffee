@@ -31,7 +31,6 @@ Thread = React.createClass
       for node in messageNode.children
         queue.push node
 
-    # Reverse the message order. This is needed because we're using flexbox
     return messages
 
   render: ->
