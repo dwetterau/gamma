@@ -10,22 +10,15 @@ MessageStore = Reflux.createStore
   ]
   init: ->
     @messages = {}
-    @threadMessageMap = {}
-
-  _addMessageToThread: (messageId, threadId) ->
-    if threadId not of @threadMessageMap
-      @threadMessageMap[threadId] = []
-
-    @threadMessageMap[threadId].push messageId
 
   onNewMessage: (body) ->
     {message, messageData, previousMessage} = body
-    if previousMessage.id not of @messages
+    previousMessageId = if previousMessage then previousMessage.id else -1
+    if previousMessageId not of @messages and previousMessage
       # Insert a temporary entry for the previous message with metadata
-      @messages[previousMessage.id] = {metadata: previousMessage, full: false}
+      @messages[previousMessageId] = {metadata: previousMessage, full: false}
 
-    @messages[message.id] = {metadata: message, data: messageData, previousMessageId: previousMessage.id, full: true}
-    @_addMessageToThread(message.id, message.ThreadId)
+    @messages[message.id] = {metadata: message, data: messageData, previousMessageId: previousMessageId, full: true}
     @_triggerStateChange(message.id)
 
   onBulkLoadMessages: (messages) ->
@@ -45,7 +38,6 @@ MessageStore = Reflux.createStore
         previousMessageId,
         full: true
       }
-      @_addMessageToThread(message.id, message.ThreadId)
       @_triggerStateChange(message.id)
 
   hasFullMessage: (messageId) ->
@@ -56,15 +48,6 @@ MessageStore = Reflux.createStore
       return null
 
     return @messages[messageId]
-
-  getMessagesForThread: (threadId) ->
-    if threadId not of @threadMessageMap
-      return {}
-
-    messages = {}
-    for messageId in @threadMessageMap[threadId]
-      messages[messageId] = @getMessage(messageId)
-    return messages
 
   _triggerStateChange: (messageId) ->
     @trigger messageId

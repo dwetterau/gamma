@@ -3,6 +3,7 @@ Router = require 'react-router'
 RouteHandler = Router.RouteHandler
 
 cursorStore = require '../stores/cursor_store'
+messageStore = require '../stores/message_store'
 notificationStore = require '../stores/notification_store'
 threadStore = require '../stores/thread_store'
 userSessionStore = require '../stores/user_session_store'
@@ -18,6 +19,7 @@ Home = React.createClass
     user = userSessionStore.getUser()
     state = {
       threadTrees: {}
+      threadMessageMap: {}
       messages: {}
     }
     if user?
@@ -44,6 +46,7 @@ Home = React.createClass
 
   componentDidMount: ->
     @unsubscribeFromCursorStore = cursorStore.listen(@_onCursorStoreUpdate)
+    @unsubscribeFromMessageStore = messageStore.listen(@_onMessageStoreUpdate)
     @unsubscribeFromThreadStore = threadStore.listen(@_onThreadStoreUpdate)
     @unsubscribeFromUserSessionStore = userSessionStore.listen(@_onUserSessionUpdate)
 
@@ -52,11 +55,34 @@ Home = React.createClass
 
   componentWillUnmount: ->
     @unsubscribeFromCursorStore()
+    @unsubscribeFromMessageStore()
     @unsubscribeFromThreadStore()
     @unsubscribeFromUserSessionStore()
 
+  _addMessageToThread: (messageId, threadId) ->
+    if threadId not of @state.threadMessageMap
+      @state.threadMessageMap[threadId] = []
+
+    @state.threadMessageMap[threadId].push messageId
+
+  _onMessageStoreUpdate: (messageId) ->
+    # TODO: Do something smarter here.
+    messages = @state.messages
+    messages[messageId] = messageStore.getMessage(messageId)
+    @_addMessageToThread messageId, messages[messageId].metadata.ThreadId
+    @setState {messages}
+
   _switchThread: (threadId) ->
     @transitionTo '/thread/' + threadId
+
+  _getMessagesForThread: (threadId) ->
+    if threadId not of @state.threadMessageMap
+      return {}
+
+    messages = {}
+    for messageId in @state.threadMessageMap[threadId]
+      messages[messageId] = @state.messages[messageId]
+    return messages
 
   _renderThreadSidebar: ->
     threads = []
@@ -76,6 +102,7 @@ Home = React.createClass
       threadProps = {
         threadId,
         tree: @state.threadTrees[threadId]
+        messages: @_getMessagesForThread(threadId)
       }
       <RouteHandler {...threadProps}/>
     else

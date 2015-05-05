@@ -53,7 +53,9 @@ ThreadStore = Reflux.createStore
     if threadId not of @data
       loadThreads()
 
-    @_addMessageToTree(message, previousMessage.id)
+    # Take care of the first message in the thread case
+    previousMessageId = if previousMessage then previousMessage.id else null
+    @_addMessageToTree(message, previousMessageId)
     @_triggerStateChange([threadId])
 
   # Load the list of threads for the current user

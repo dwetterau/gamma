@@ -1,36 +1,13 @@
 React = require 'react'
 
-messageStore = require '../stores/message_store'
-
 Thread = React.createClass
-
-  getInitialState: ->
-    return {
-      messages: {}
-    }
-
-  componentDidMount: ->
-    @unsubscribeFromMessageStore = messageStore.listen(@_onMessageStoreUpdate)
-
-    # Load all messages that we need from the messageStore
-    messages = messageStore.getMessagesForThread @props.threadId
-    @setState {messages}
-
-  componentWillUnmount: ->
-    @unsubscribeFromMessageStore()
-
-  _onMessageStoreUpdate: (messageId) ->
-    # TODO: Do something smarter here.
-    messages = @state.messages
-    messages[messageId] = messageStore.getMessage(messageId)
-    @setState {messages}
 
   # Return if we have the message
   _hasMessage: (messageId) ->
-    return messageId of @state.messages
+    return messageId of @props.messages
 
   _renderMessage: (messageId) ->
-    {metadata, data} = @state.messages[messageId]
+    {metadata, data} = @props.messages[messageId]
     <div key={'mm' + metadata.id}>
       {metadata.AuthorId}: {data.value}
     </div>
