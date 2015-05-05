@@ -36,3 +36,18 @@ div.alert {
 .form-input {
     display: block;
 }
+
+/* Style for thread view */
+.thread-message-list-container .mui-paper .mui-paper-container {
+    height: 600px;
+    display: flex;
+    flex-direction: row;
+}
+
+.thread-message-list {
+    overflow-y: auto;
+    overflow-x: hidden;
+    align-self: flex-end;
+    flex-grow: 1;
+    max-height: 600px;
+}

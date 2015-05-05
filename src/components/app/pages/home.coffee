@@ -19,6 +19,7 @@ Home = React.createClass
     user = userSessionStore.getUser()
     state = {
       threadTrees: {}
+      threadNames: threadStore.getThreadNames()
       threadMessageMap: {}
       messages: {}
     }
@@ -31,14 +32,10 @@ Home = React.createClass
     @setState {user}
 
   _onThreadStoreUpdate: (threadIds) ->
-    if 'threadNames' not of @state
-      threadNames = threadStore.getThreadNames()
-      @setState {threadNames}
-    else
-      threadTrees = @state.threadTrees
-      for threadId in threadIds
-        threadTrees[threadId] = threadStore.getTree threadId
-      @setState {threadTrees}
+    threadTrees = @state.threadTrees
+    for threadId in threadIds
+      threadTrees[threadId] = threadStore.getTree threadId
+    @setState {threadTrees}
 
   _onCursorStoreUpdate: (threadId) ->
     console.log "Got cursor for threadId: ", threadId, cursorStore.getCursor(threadId)
@@ -98,10 +95,11 @@ Home = React.createClass
 
   _renderThreadComponent: ->
     threadId = @props.params.threadId
-    if threadId of @state.threadTrees
+    tree = if threadId of @state.threadTrees then @state.threadTrees[threadId] else null
+    if threadId of @state.threadNames
       threadProps = {
         threadId,
-        tree: @state.threadTrees[threadId]
+        tree,
         messages: @_getMessagesForThread(threadId)
       }
       <RouteHandler {...threadProps}/>
@@ -111,9 +109,6 @@ Home = React.createClass
   render: ->
     return (
       <div className="mui-app-content-canvas container">
-        <div className="page-header">
-          <h1>Welcome</h1>
-        </div>
         <div className="component">
           {@_renderThreadSidebar()}
           {@_renderThreadComponent()}

@@ -1,4 +1,5 @@
 React = require 'react'
+{Paper} = require 'material-ui'
 
 Thread = React.createClass
 
@@ -13,8 +14,12 @@ Thread = React.createClass
     </div>
 
   _renderMessages: ->
-    elements = []
+    messages = []
     # Perform a traversal on the tree and print out all the messages
+    if not @props.tree
+      return (
+        <div>Thread has no messages!</div>
+      )
     queue = (node for node in @props.tree.children)
     while queue.length
       messageNode = queue.shift()
@@ -22,17 +27,21 @@ Thread = React.createClass
       # If the message isn't loaded yet, don't keep traversing
       if not @_hasMessage messageNode.id
         continue
-      elements.push @_renderMessage messageNode.id
+      messages.push @_renderMessage messageNode.id
       for node in messageNode.children
         queue.push node
 
-    return elements
+    # Reverse the message order. This is needed because we're using flexbox
+    return messages
 
   render: ->
     threadId = @props.threadId
-    <div className="col-sm-10">
-      Thread Page id={threadId}
-      {@_renderMessages()}
+    <div className="col-sm-10 thread-message-list-container">
+      <Paper>
+        <div className="thread-message-list">
+          {@_renderMessages()}
+        </div>
+      </Paper>
     </div>
 
 module.exports = Thread
