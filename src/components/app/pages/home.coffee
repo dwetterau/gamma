@@ -22,6 +22,7 @@ Home = React.createClass
       threadNames: threadStore.getThreadNames()
       threadMessageMap: {}
       messages: {}
+      cursors: {}
     }
     if user?
       state.user = user
@@ -38,8 +39,9 @@ Home = React.createClass
     @setState {threadTrees}
 
   _onCursorStoreUpdate: (threadId) ->
-    console.log "Got cursor for threadId: ", threadId, cursorStore.getCursor(threadId)
-
+    cursors = @state.cursors
+    cursors[threadId] = cursorStore.getCursor(threadId)
+    @setState {cursors}
 
   componentDidMount: ->
     @unsubscribeFromCursorStore = cursorStore.listen(@_onCursorStoreUpdate)
@@ -84,8 +86,17 @@ Home = React.createClass
   _renderThreadSidebar: ->
     threads = []
     for threadId of @state.threadNames
+      # Determine if the thread has been updated
+      updated = true
+      if threadId of @state.cursors
+        updated = threadStore.hasBeenUpdated(@state.cursors[threadId])
+
+      className = ''
+      if updated
+        className = 'updated'
+
       threads.push(
-        <div onClick={@_switchThread.bind(this, threadId)} key={"tn" + threadId}>
+        <div className={className} onClick={@_switchThread.bind(this, threadId)} key={"tn" + threadId}>
           {@state.threadNames[threadId].displayName}
         </div>
       )

@@ -17,6 +17,7 @@ ThreadStore = Reflux.createStore
     # For each thread stores a mapping of parent id to message
     @parentIndices = {}
     @data = {}
+    @lastUpdate = {}
 
   _addMessageToTree: (message, previousMessageId) ->
     threadId = message.ThreadId
@@ -24,6 +25,7 @@ ThreadStore = Reflux.createStore
       @trees[threadId] = new MessageNode()
       @indices[threadId] = {}
       @parentIndices[threadId] = {}
+      @lastUpdate[threadId] = new Date(message.createdAt)
 
     if message.id not of @indices[threadId]
       newNode = new MessageNode message.id, previousMessageId
@@ -43,6 +45,9 @@ ThreadStore = Reflux.createStore
       # Update the indices to include the new message
       @indices[threadId][message.id] = newNode
       @parentIndices[threadId][previousMessageId] = newNode
+      d = new Date(message.createdAt)
+      if d > @lastUpdate[threadId]
+        @lastUpdate[threadId] = d
 
   # Process a new message that came in from a notification
   onNewMessage: (body) ->
@@ -104,6 +109,13 @@ ThreadStore = Reflux.createStore
       return null
 
     return @trees[threadId]
+
+  # Given a cursor, determine if the thread has been updated since then or not
+  hasBeenUpdated: (cursor) ->
+    if cursor.ThreadId not of @lastUpdate
+      return false
+    d = new Date(cursor.viewTime)
+    return d < @lastUpdate[cursor.ThreadId]
 
   _triggerStateChange: (threadIdList) ->
     @trigger threadIdList
