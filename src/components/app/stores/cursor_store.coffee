@@ -1,15 +1,15 @@
 Reflux = require 'reflux'
-{loadThreadMessages} = require '../actions'
+{loadThreadCursor} = require '../actions'
 
 CursorStore = Reflux.createStore
   listenables: [
-    {loadThreadMessages}
+    {loadThreadCursor}
   ]
   init: ->
     @data = {}
 
   # Load the messages for the specified thread
-  onLoadThreadMessages: (threadId) ->
+  onLoadThreadCursor: (threadId) ->
     $.get('/api/thread/' + threadId + '/cursor', (response) =>
       if response.ok
         @data[threadId] = response.body.cursor
@@ -24,10 +24,10 @@ CursorStore = Reflux.createStore
 
   updateCursor: (threadId, viewTime) ->
     if threadId not of @data
-      throw new Error "Updating non-existent cursor."
+      return
 
     cursorId = @data[threadId].id
-    $.post('/api/cursor/' + cursorId + '/update', {viewTime}).then (response) ->
+    $.post('/api/cursor/' + cursorId + '/update', {viewTime}).then (response) =>
       if response.ok
         @data[threadId] = response.body.cursor
         @_triggerStateChange(threadId)

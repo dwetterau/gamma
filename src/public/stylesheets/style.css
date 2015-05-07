@@ -51,3 +51,7 @@ div.alert {
     flex-grow: 1;
     max-height: 600px;
 }
+
+.thread-name.updated {
+    font-weight: 900;
+}

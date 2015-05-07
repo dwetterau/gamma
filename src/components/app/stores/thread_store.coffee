@@ -1,6 +1,6 @@
 Reflux = require 'reflux'
 constants = require '../../../lib/common/constants'
-{newMessage, loadThreads, bulkLoadMessages} = require '../actions'
+{newMessage, loadThreads, bulkLoadMessages, loadThreadCursor} = require '../actions'
 MessageNode = require '../lib/message_node'
 Notifier = require '../lib/notifier'
 
@@ -90,6 +90,9 @@ ThreadStore = Reflux.createStore
 
       # Call an action to load the messages in bulk
       bulkLoadMessages(response.body.messages)
+
+      # Call an action to load the cursor for the thread
+      loadThreadCursor(threadId)
     )
 
   onBulkLoadMessages: (messages) ->
@@ -111,11 +114,11 @@ ThreadStore = Reflux.createStore
     return @trees[threadId]
 
   # Given a cursor, determine if the thread has been updated since then or not
-  hasBeenUpdated: (cursor) ->
-    if cursor.ThreadId not of @lastUpdate
+  hasBeenUpdated: (cursor, threadId) ->
+    if threadId not of @lastUpdate
       return false
     d = new Date(cursor.viewTime)
-    return d < @lastUpdate[cursor.ThreadId]
+    return d < @lastUpdate[threadId]
 
   _triggerStateChange: (threadIdList) ->
     @trigger threadIdList

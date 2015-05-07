@@ -22,3 +22,6 @@ exports.loadThreadMessages = Reflux.createAction()
 
 # Used to load many messages at once into the message and thread stores
 exports.bulkLoadMessages = Reflux.createAction()
+
+# Used to load the cursor for a thread
+exports.loadThreadCursor = Reflux.createAction()

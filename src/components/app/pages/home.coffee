@@ -72,6 +72,8 @@ Home = React.createClass
     @setState {messages}
 
   _switchThread: (threadId) ->
+    # TODO: Put this in a listener for scrolling of the thread (or better interaction)
+    cursorStore.updateCursor(threadId, new Date())
     @transitionTo '/thread/' + threadId
 
   _getMessagesForThread: (threadId) ->
@@ -87,13 +89,13 @@ Home = React.createClass
     threads = []
     for threadId of @state.threadNames
       # Determine if the thread has been updated
-      updated = true
+      updated = false
       if threadId of @state.cursors
-        updated = threadStore.hasBeenUpdated(@state.cursors[threadId])
+        updated = threadStore.hasBeenUpdated(@state.cursors[threadId], threadId)
 
-      className = ''
+      className = 'thread-name'
       if updated
-        className = 'updated'
+        className += ' updated'
 
       threads.push(
         <div className={className} onClick={@_switchThread.bind(this, threadId)} key={"tn" + threadId}>
