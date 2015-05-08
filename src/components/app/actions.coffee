@@ -25,3 +25,6 @@ exports.bulkLoadMessages = Reflux.createAction()
 
 # Used to load the cursor for a thread
 exports.loadThreadCursor = Reflux.createAction()
+
+# Used to load users needed for displaying
+exports.loadUsers = Reflux.createAction()

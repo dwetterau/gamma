@@ -19,9 +19,10 @@ MessageStore = Reflux.createStore
       @messages[previousMessageId] = {metadata: previousMessage, full: false}
 
     @messages[message.id] = {metadata: message, data: messageData, previousMessageId: previousMessageId, full: true}
-    @_triggerStateChange(message.id)
+    @_triggerStateChange([message.id])
 
   onBulkLoadMessages: (messages) ->
+    updated = []
     for messageObject in messages
       {message, previousMessageId} = messageObject
 
@@ -38,7 +39,8 @@ MessageStore = Reflux.createStore
         previousMessageId,
         full: true
       }
-      @_triggerStateChange(message.id)
+      updated.push message.id
+    @_triggerStateChange(updated)
 
   hasFullMessage: (messageId) ->
     return messageId of @messages and @messages[messageId].full
@@ -49,7 +51,7 @@ MessageStore = Reflux.createStore
 
     return @messages[messageId]
 
-  _triggerStateChange: (messageId) ->
-    @trigger messageId
+  _triggerStateChange: (messageIds) ->
+    @trigger messageIds
 
 module.exports = MessageStore

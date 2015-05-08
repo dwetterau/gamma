@@ -9,8 +9,12 @@ Thread = React.createClass
 
   _renderMessage: (messageId) ->
     {metadata, data} = @props.messages[messageId]
+    username = "Unknown"
+    if metadata.AuthorId of @props.users
+      username = @props.users[metadata.AuthorId]
+
     <div key={'mm' + metadata.id}>
-      {metadata.AuthorId}: {data.value}
+      {username}<span>: </span>{data.value}
     </div>
 
   _renderMessages: ->

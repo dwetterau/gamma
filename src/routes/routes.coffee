@@ -37,6 +37,9 @@ router.post '/api/cursor/:cursorId/update', auth, cursor_controller.post_update_
 # Notification api routes
 router.get '/api/notifications', auth, notification_controller.get_listen_notifications
 
+# User api routes
+router.get '/api/users', auth, user_controller.get_users
+
 # Start the notification server
 notification_controller.startNotificationServer()
 

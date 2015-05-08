@@ -7,9 +7,10 @@ messageStore = require '../stores/message_store'
 notificationStore = require '../stores/notification_store'
 threadStore = require '../stores/thread_store'
 userSessionStore = require '../stores/user_session_store'
+userStore = require '../stores/user_store'
 
 # Actions this page can make
-{loadThreads} = require '../actions'
+{loadThreads, loadUsers} = require '../actions'
 
 Home = React.createClass
 
@@ -23,6 +24,7 @@ Home = React.createClass
       threadMessageMap: {}
       messages: {}
       cursors: {}
+      users: {}
     }
     if user?
       state.user = user
@@ -31,6 +33,12 @@ Home = React.createClass
 
   _onUserSessionUpdate: (user) ->
     @setState {user}
+
+  _onUserUpdate: (userIds) ->
+    users = @state.users
+    for userId in userIds
+      users[userId] = userStore.getUser(userId)
+    @setState {users}
 
   _onThreadStoreUpdate: (threadIds) ->
     threadTrees = @state.threadTrees
@@ -48,6 +56,7 @@ Home = React.createClass
     @unsubscribeFromMessageStore = messageStore.listen(@_onMessageStoreUpdate)
     @unsubscribeFromThreadStore = threadStore.listen(@_onThreadStoreUpdate)
     @unsubscribeFromUserSessionStore = userSessionStore.listen(@_onUserSessionUpdate)
+    @unsubscribeFromUserStore = userStore.listen(@_onUserUpdate)
 
     # Load all threads for the user
     loadThreads()
@@ -64,11 +73,20 @@ Home = React.createClass
 
     @state.threadMessageMap[threadId].push messageId
 
-  _onMessageStoreUpdate: (messageId) ->
-    # TODO: Do something smarter here.
+  _onMessageStoreUpdate: (messageIds) ->
     messages = @state.messages
-    messages[messageId] = messageStore.getMessage(messageId)
-    @_addMessageToThread messageId, messages[messageId].metadata.ThreadId
+    userIds = {}
+    for messageId in messageIds
+      messages[messageId] = messageStore.getMessage(messageId)
+      authorId = messages[messageId].metadata.AuthorId
+      if authorId not of @state.users
+        userIds[authorId] = true
+
+      @_addMessageToThread messageId, messages[messageId].metadata.ThreadId
+
+    userIdsToLookup = (userId for userId, _ of userIds)
+    loadUsers(userIdsToLookup)
+
     @setState {messages}
 
   _switchThread: (threadId) ->
@@ -113,6 +131,7 @@ Home = React.createClass
       threadProps = {
         threadId,
         tree,
+        users: @state.users,
         messages: @_getMessagesForThread(threadId)
       }
       <RouteHandler {...threadProps}/>
