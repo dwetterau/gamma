@@ -85,14 +85,13 @@ exports.post_change_password = (req, res) ->
 
 exports.get_users = (req, res) ->
   userIds = req.param 'userIds'
-  models.User.find(userIds).then (users) ->
+  models.User.findAll({where: {id: userIds}}).then (users) ->
     userMap = {}
     if not (users instanceof Array)
       users = [users]
 
     for user in users
       userMap[user.id] = user.toJSON()
-
     res.send {ok: true, body: {users: userMap}}
   .catch (error) ->
     res.send {ok: false, error: "Failed to retrieve users."}

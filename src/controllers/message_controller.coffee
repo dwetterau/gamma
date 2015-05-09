@@ -27,7 +27,6 @@ exports.post_create_message = (req, res) ->
   thread = null
   parentId = req.param('parentId')
 
-  checkParent = req.param('parentId')
   req.user.getThreads({where: {id: thisThread}}).then (threads) ->
     # This should only return the one thread we're interested in
     if threads.length == 1

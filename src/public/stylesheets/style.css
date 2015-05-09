@@ -38,6 +38,10 @@ div.alert {
 }
 
 /* Style for thread view */
+.thread-view-page {
+    padding-top: 20px;
+}
+
 .thread-message-list-container .mui-paper .mui-paper-container {
     height: 600px;
     display: flex;
@@ -54,4 +58,21 @@ div.alert {
 
 .thread-name.updated {
     font-weight: 900;
+}
+
+.chat-box-row {
+    display: flex;
+}
+
+.chat-box-text-field {
+    flex-grow: 1;
+    padding: 0 1em;
+}
+
+.chat-box-text-field .mui-text-field {
+    width: 100%;
+}
+
+.chat-box-send-button {
+    align-self: center;
 }

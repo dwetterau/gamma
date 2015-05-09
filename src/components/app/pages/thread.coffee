@@ -11,7 +11,7 @@ Thread = React.createClass
     {metadata, data} = @props.messages[messageId]
     username = "Unknown"
     if metadata.AuthorId of @props.users
-      username = @props.users[metadata.AuthorId]
+      username = @props.users[metadata.AuthorId].username
 
     <div key={'mm' + metadata.id}>
       {username}<span>: </span>{data.value}

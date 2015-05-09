@@ -2,6 +2,7 @@ Reflux = require 'reflux'
 constants = require '../../../lib/common/constants'
 {newMessage, bulkLoadMessages} = require '../actions'
 threadStore = require './thread_store'
+Notifier = require '../lib/notifier'
 
 MessageStore = Reflux.createStore
   listenables: [
@@ -50,6 +51,14 @@ MessageStore = Reflux.createStore
       return null
 
     return @messages[messageId]
+
+  sendNewMessage: (threadId, content, type, parentId) ->
+    if not type?
+      type = 0
+    data = {threadId, content, type, parentId}
+    $.post('/api/message/create', data).done (response) =>
+      if not response.ok
+        Notifier.error response.error
 
   _triggerStateChange: (messageIds) ->
     @trigger messageIds

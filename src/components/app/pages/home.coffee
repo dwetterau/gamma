@@ -9,6 +9,8 @@ threadStore = require '../stores/thread_store'
 userSessionStore = require '../stores/user_session_store'
 userStore = require '../stores/user_store'
 
+ChatBox = require './thread/chat_box'
+
 # Actions this page can make
 {loadThreads, loadUsers} = require '../actions'
 
@@ -103,6 +105,20 @@ Home = React.createClass
       messages[messageId] = @state.messages[messageId]
     return messages
 
+  _activeValidThread: ->
+    threadId = @props.params.threadId
+    if threadId of @state.threadNames
+      return threadId
+    else
+      return null
+
+  _onSend: (content) ->
+    threadId = @_activeValidThread()
+    if not threadId
+      throw new Error "Can't send a message with no thread!"
+
+    messageStore.sendNewMessage threadId, content
+
   _renderThreadSidebar: ->
     threads = []
     for threadId of @state.threadNames
@@ -125,9 +141,9 @@ Home = React.createClass
     </div>
 
   _renderThreadComponent: ->
-    threadId = @props.params.threadId
+    threadId = @_activeValidThread()
     tree = if threadId of @state.threadTrees then @state.threadTrees[threadId] else null
-    if threadId of @state.threadNames
+    if threadId
       threadProps = {
         threadId,
         tree,
@@ -136,14 +152,34 @@ Home = React.createClass
       }
       <RouteHandler {...threadProps}/>
     else
-      <div className="col-sm-10">Thread not found!</div>
+      <div className="col-sm-10">
+        Thread not found!
+      </div>
+
+  _renderLoggedInUserComponent: ->
+    user = userSessionStore.getUser()
+    username = if user then user.username else "Unknown User"
+    id = if user then user.id else -1
+    <div className="col-sm-2">
+      <div>{username}</div>
+      <div>id = {id}</div>
+    </div>
+
+  _renderChatBox: ->
+    threadId = @_activeValidThread()
+    if threadId
+      <div className="col-sm-10 chat-box">
+        <ChatBox onSend={@_onSend} />
+      </div>
 
   render: ->
     return (
-      <div className="mui-app-content-canvas container">
+      <div className="mui-app-content-canvas container thread-view-page">
         <div className="component">
           {@_renderThreadSidebar()}
           {@_renderThreadComponent()}
+          {@_renderLoggedInUserComponent()}
+          {@_renderChatBox()}
         </div>
       </div>
     )
