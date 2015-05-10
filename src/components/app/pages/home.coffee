@@ -75,6 +75,21 @@ Home = React.createClass
 
     @state.threadMessageMap[threadId].push messageId
 
+  _getCurrentParentId: ->
+    threadId = @_activeValidThread()
+    currentParentId = undefined;
+    if not threadId or threadId not of @state.threadMessageMap
+      return currentParentId
+
+    for messageId in @state.threadMessageMap[threadId]
+      parentId = @state.messages[messageId].metadata.ParentId
+      if parentId
+        currentParentId = parentId
+      else if not currentParentId?
+        currentParentId = messageId
+
+    return currentParentId
+
   _onMessageStoreUpdate: (messageIds) ->
     messages = @state.messages
     userIds = {}
@@ -89,7 +104,9 @@ Home = React.createClass
     userIdsToLookup = (userId for userId, _ of userIds)
     loadUsers(userIdsToLookup)
 
-    @setState {messages}
+    currentParentId = @_getCurrentParentId()
+
+    @setState {messages, currentParentId}
 
   _switchThread: (threadId) ->
     # TODO: Put this in a listener for scrolling of the thread (or better interaction)
@@ -117,7 +134,8 @@ Home = React.createClass
     if not threadId
       throw new Error "Can't send a message with no thread!"
 
-    messageStore.sendNewMessage threadId, content
+    parentId = @state.currentParentId
+    messageStore.sendNewMessage threadId, content, 0, parentId
 
   _renderThreadSidebar: ->
     threads = []
