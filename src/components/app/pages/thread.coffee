@@ -1,5 +1,5 @@
 React = require 'react'
-{Paper} = require 'material-ui'
+{Paper, TextField, RaisedButton} = require 'material-ui'
 
 ChatBox = require './thread/chat_box'
 
@@ -7,14 +7,31 @@ Thread = React.createClass
 
   getInitialState: ->
     return {
-      currentList: 0
+      currentListIndex: 0
     }
 
   _onSend: (content) ->
-    currentMessageList = @props.messageLists[@state.currentList]
-    previousId = currentMessageList[currentMessageList.length - 1]
-    parentId = @props.messages[previousId].metadata.ParentId
-    @props.sendMessage @props.threadId, content, 0, parentId
+    getParentId = (listIndex) =>
+      currentMessageList = @props.messageLists[listIndex]
+      previousId = currentMessageList[currentMessageList.length - 1]
+      return @props.messages[previousId].metadata.ParentId
+
+    if @state.currentListIndex >= @props.messageLists.length
+      # We have a new fork. Send a type 1 message first
+      # TODO: Let this fork from any branch
+      parentId = getParentId 0
+      @props.sendMessage(@props.threadId, '', 1, parentId).done (response) =>
+        if response.ok
+          parentId = response.body.message.id
+          @props.sendMessage @props.threadId, content, 0, parentId
+
+    else
+      parentId = getParentId @state.currentListIndex
+      @props.sendMessage @props.threadId, content, 0, parentId
+
+  _onCurrentListIndexUpdate: ->
+    currentListIndex = parseInt @refs.currentListIndexTextField.getValue(), 10
+    @setState {currentListIndex}
 
   # Return if we have the message
   _hasMessage: (messageId) ->
@@ -22,6 +39,10 @@ Thread = React.createClass
 
   _renderMessage: (messageId) ->
     {metadata, data} = @props.messages[messageId]
+    # Don't render fork messages
+    if metadata.type != 0
+      return ''
+
     username = "Unknown"
     if metadata.AuthorId of @props.users
       username = @props.users[metadata.AuthorId].username
@@ -55,7 +76,12 @@ Thread = React.createClass
           </div>
         </Paper>
       </div>
-      <div className="col-sm-10 chat-box">
+      <div className="col-sm-2">
+        <TextField ref="currentListIndexTextField" defaultValue="0"
+          hintText="Current List Index"/>
+        <RaisedButton label="Update" onClick={@_onCurrentListIndexUpdate} />
+      </div>
+      <div className="col-sm-offset-2 col-sm-10 chat-box">
         <ChatBox onSend={@_onSend} />
       </div>
     </div>
