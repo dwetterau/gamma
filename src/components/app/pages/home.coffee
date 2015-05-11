@@ -9,8 +9,6 @@ threadStore = require '../stores/thread_store'
 userSessionStore = require '../stores/user_session_store'
 userStore = require '../stores/user_store'
 
-ChatBox = require './thread/chat_box'
-
 # Actions this page can make
 {loadThreads, loadUsers} = require '../actions'
 
@@ -75,21 +73,6 @@ Home = React.createClass
 
     @state.threadMessageMap[threadId].push messageId
 
-  _getCurrentParentId: ->
-    threadId = @_activeValidThread()
-    currentParentId = undefined;
-    if not threadId or threadId not of @state.threadMessageMap
-      return currentParentId
-
-    for messageId in @state.threadMessageMap[threadId]
-      parentId = @state.messages[messageId].metadata.ParentId
-      if parentId
-        currentParentId = parentId
-      else if not currentParentId?
-        currentParentId = messageId
-
-    return currentParentId
-
   _onMessageStoreUpdate: (messageIds) ->
     messages = @state.messages
     userIds = {}
@@ -104,9 +87,7 @@ Home = React.createClass
     userIdsToLookup = (userId for userId, _ of userIds)
     loadUsers(userIdsToLookup)
 
-    currentParentId = @_getCurrentParentId()
-
-    @setState {messages, currentParentId}
+    @setState {messages}
 
   _switchThread: (threadId) ->
     # TODO: Put this in a listener for scrolling of the thread (or better interaction)
@@ -149,13 +130,8 @@ Home = React.createClass
 
     return messageLists
 
-  _onSend: (content) ->
-    threadId = @_activeValidThread()
-    if not threadId
-      throw new Error "Can't send a message with no thread!"
-
-    parentId = @state.currentParentId
-    messageStore.sendNewMessage threadId, content, 0, parentId
+  sendMessage: (threadId, content, type, parentId) ->
+    messageStore.sendNewMessage threadId, content, type, parentId
 
   _renderThreadSidebar: ->
     threads = []
@@ -188,6 +164,7 @@ Home = React.createClass
         users: @state.users,
         messages: @_getMessagesForThread(threadId)
         messageLists: @_getMessageLists(threadId)
+        sendMessage: @sendMessage
       }
       <RouteHandler {...threadProps}/>
     else
@@ -204,13 +181,6 @@ Home = React.createClass
       <div>id = {id}</div>
     </div>
 
-  _renderChatBox: ->
-    threadId = @_activeValidThread()
-    if threadId
-      <div className="col-sm-10 chat-box">
-        <ChatBox onSend={@_onSend} />
-      </div>
-
   render: ->
     return (
       <div className="mui-app-content-canvas container thread-view-page">
@@ -218,7 +188,6 @@ Home = React.createClass
           {@_renderThreadSidebar()}
           {@_renderThreadComponent()}
           {@_renderLoggedInUserComponent()}
-          {@_renderChatBox()}
         </div>
       </div>
     )

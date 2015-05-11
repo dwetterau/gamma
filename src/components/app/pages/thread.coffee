@@ -1,7 +1,20 @@
 React = require 'react'
 {Paper} = require 'material-ui'
 
+ChatBox = require './thread/chat_box'
+
 Thread = React.createClass
+
+  getInitialState: ->
+    return {
+      currentList: 0
+    }
+
+  _onSend: (content) ->
+    currentMessageList = @props.messageLists[@state.currentList]
+    previousId = currentMessageList[currentMessageList.length - 1]
+    parentId = @props.messages[previousId].metadata.ParentId
+    @props.sendMessage @props.threadId, content, 0, parentId
 
   # Return if we have the message
   _hasMessage: (messageId) ->
@@ -34,12 +47,17 @@ Thread = React.createClass
 
   render: ->
     threadId = @props.threadId
-    <div className="col-sm-10 thread-message-list-container">
-      <Paper>
-        <div className="thread-message-list">
-          {@_renderMessages()}
-        </div>
-      </Paper>
+    <div>
+      <div className="col-sm-10 thread-message-list-container">
+        <Paper>
+          <div className="thread-message-list">
+            {@_renderMessages()}
+          </div>
+        </Paper>
+      </div>
+      <div className="col-sm-10 chat-box">
+        <ChatBox onSend={@_onSend} />
+      </div>
     </div>
 
 module.exports = Thread
