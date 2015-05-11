@@ -36,7 +36,6 @@ NotificationStore = Reflux.createStore
       @_triggerStateChange()
 
   _triggerStateChange: ->
-    console.log "Triggering!"
     @trigger @notifications
 
 module.exports =  NotificationStore

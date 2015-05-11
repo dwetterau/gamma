@@ -19,23 +19,18 @@ Thread = React.createClass
 
   _renderMessages: ->
     messages = []
-    # Perform a traversal on the tree and print out all the messages
-    if not @props.tree
-      return (
-        <div>Thread has no messages!</div>
-      )
-    queue = (node for node in @props.tree.children)
-    while queue.length
-      messageNode = queue.shift()
+    for messageList in @props.messageLists
+      for messageId in messageList
+        # If the message isn't loaded yet, don't keep traversing
+        if not @_hasMessage messageId
+          break
+        messages.push @_renderMessage messageId
 
-      # If the message isn't loaded yet, don't keep traversing
-      if not @_hasMessage messageNode.id
-        continue
-      messages.push @_renderMessage messageNode.id
-      for node in messageNode.children
-        queue.push node
-
-    return messages
+    if messages.length
+      return messages
+    else return (
+      <div>Thread has no messages!</div>
+    )
 
   render: ->
     threadId = @props.threadId

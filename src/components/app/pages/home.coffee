@@ -129,6 +129,26 @@ Home = React.createClass
     else
       return null
 
+  # Given the thread tree, generate a list of message lists to render
+  _getMessageLists: (threadId) ->
+    if threadId not of @state.threadTrees or not @state.threadTrees[threadId]
+      return []
+    messageLists = [[]]
+    depthFirstSearch = (node, index) ->
+      if node.id != -1
+        messageLists[index].push node.id
+
+      for child, i in node.children
+        # If it has more than one child, add a new array for the new list
+        if i > 0
+          messageLists.push []
+        # Always recurse on the last list in the list of message lists
+        depthFirstSearch child, messageLists.length - 1
+
+    depthFirstSearch @state.threadTrees[threadId], 0
+
+    return messageLists
+
   _onSend: (content) ->
     threadId = @_activeValidThread()
     if not threadId
@@ -167,6 +187,7 @@ Home = React.createClass
         tree,
         users: @state.users,
         messages: @_getMessagesForThread(threadId)
+        messageLists: @_getMessageLists(threadId)
       }
       <RouteHandler {...threadProps}/>
     else
