@@ -114,19 +114,36 @@ Home = React.createClass
   _getMessageLists: (threadId) ->
     if threadId not of @state.threadTrees or not @state.threadTrees[threadId]
       return []
-    messageLists = [[]]
-    depthFirstSearch = (node, index) ->
+    messageLists = []
+    queue = [@state.threadTrees[threadId]]
+    parentToIndex = {}
+    while queue.length
+      node = queue.shift()
+
+      # Maintain the causal dependencies, don't traverse nodes we can't reach yet
+      if node.previousId != -1 and (node.previousId not of @state.messages)
+        continue
+
+      # Don't actually add the sentinel node to render.
       if node.id != -1
+        index = 0
+        if node.parentId of parentToIndex
+          index = parentToIndex[node.parentId]
         messageLists[index].push node.id
 
-      for child, i in node.children
-        # If it has more than one child, add a new array for the new list
-        if i > 0
-          messageLists.push []
-        # Always recurse on the last list in the list of message lists
-        depthFirstSearch child, messageLists.length - 1
+      if node.children.length
+        messageLists.push []
+        parentToIndex[node.id] = messageLists.length - 1
 
-    depthFirstSearch @state.threadTrees[threadId], 0
+      for child in node.children
+        queue.push child
+
+    # We need to combine the first two lists here for easier rendering
+    # They are separate because the first sent message as a parentId of undefined
+    # and all others have it correctly set.
+    if messageLists.length > 1
+      firstList = messageLists.shift()
+      messageLists[0] = firstList.concat messageLists[0]
 
     return messageLists
 

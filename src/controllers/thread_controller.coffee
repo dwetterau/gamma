@@ -73,7 +73,7 @@ exports.get_messages_for_thread = (req, res) ->
     return thread[0].getMessages {
       limit
       offset
-      order: 'createdAt DESC'
+      order: 'id DESC'
       where
       include: [MessageData]
     }
@@ -92,7 +92,8 @@ exports.get_messages_for_thread = (req, res) ->
       else
         previousMessageId = -1
 
-      messagesToSend[i] = {message, previousMessageId}
+      # Flip the order of the messages to return
+      messagesToSend[messagesToSend.length - 1 - i] = {message, previousMessageId}
 
     res.send {ok: true, body: {messages: messagesToSend}}
   .catch fail

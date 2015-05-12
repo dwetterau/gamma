@@ -1,14 +1,32 @@
 class MessageNode
-  constructor: (@id, @parentId) ->
+  constructor: (@id, @parentId, @previousId) ->
     if not @id
       @id = -1
       @parentId = -1
+      @previousId = -1
     @parent = null
     @children = []
 
   addChild: (childNode) ->
     childNode.setParent this
-    @children.push childNode
+
+    # Add the child in the proper place in the sorted children array.
+    # Optimize for the common append case.
+    # TODO: Use a binary search to find the location.
+    insertIndex = 0;
+    if @children.length == 0
+      @children.push childNode
+      return
+
+    for i in [@children.length - 1..0]
+      if @children[i].id < childNode.id
+        insertIndex = i + 1
+        break
+
+    if insertIndex == @children.length
+      @children.push childNode
+    else
+      @children.splice insertIndex, 0, childNode
 
   removeChild: (childNode) ->
     index = -1

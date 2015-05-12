@@ -28,23 +28,24 @@ ThreadStore = Reflux.createStore
       @lastUpdate[threadId] = new Date(message.createdAt)
 
     if message.id not of @indices[threadId]
-      newNode = new MessageNode message.id, previousMessageId
-      if previousMessageId not of @indices[threadId] and (
+      parentId = if message.ParentId then message.ParentId else -1
+      newNode = new MessageNode message.id, message.ParentId, previousMessageId
+      if parentId not of @indices[threadId] and (
           message.id not of @parentIndices[threadId])
         # If we don't have the previous message, add it as a child of the root
         @trees[threadId].addChild newNode
-      else if previousMessageId not of @indices[threadId]
+      else if parentId not of @indices[threadId]
         # This is the case where we have the child but not the parent
         childNode = @parentIndices[threadId][message.id]
         childNode.setNewParent newNode
       else
         # Add this message as a child of its parent
-        parentNode = @indices[threadId][previousMessageId]
+        parentNode = @indices[threadId][parentId]
         parentNode.addChild newNode
 
       # Update the indices to include the new message
       @indices[threadId][message.id] = newNode
-      @parentIndices[threadId][previousMessageId] = newNode
+      @parentIndices[threadId][parentId] = newNode
       d = new Date(message.createdAt)
       if d > @lastUpdate[threadId]
         @lastUpdate[threadId] = d
