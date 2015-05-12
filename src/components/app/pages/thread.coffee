@@ -54,26 +54,36 @@ Thread = React.createClass
   _renderMessages: ->
     messages = []
     for messageList in @props.messageLists
+      messages.push []
       for messageId in messageList
         # If the message isn't loaded yet, don't keep traversing
         if not @_hasMessage messageId
           break
-        messages.push @_renderMessage messageId
+        messages[messages.length - 1].push @_renderMessage messageId
+
 
     if messages.length
-      return messages
-    else return (
-      <div>Thread has no messages!</div>
-    )
+      lists = []
+      for messageList, index in messages
+        lists.push (
+          <div key={"li" + index} className="thread-message-list">
+            {messageList}
+          </div>
+        )
+      return lists
+    else
+      return (
+        <div className="thread-message-list">
+          <div>Thread has no messages!</div>
+        </div>
+      )
 
   render: ->
     threadId = @props.threadId
     <div>
       <div className="col-sm-10 thread-message-list-container">
         <Paper>
-          <div className="thread-message-list">
-            {@_renderMessages()}
-          </div>
+          {@_renderMessages()}
         </Paper>
       </div>
       <div className="col-sm-2">

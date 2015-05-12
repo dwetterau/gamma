@@ -7,12 +7,20 @@ UserStore = Reflux.createStore
   ]
   init: ->
     @data = {}
+    @requested = {}
 
   # Load the messages for the specified thread
   onLoadUsers: (userIds) ->
+    # Only request info for userIds we haven't requested yet
+    userIds = (id for id in userIds when id not of @requested)
+
     # If it's an empty list, just return
     if not userIds.length
       return
+
+    # Add the remaining ids to requested
+    for id in userIds
+      @requested[userIds] = true
 
     $.get('/api/users', {userIds}, (response) =>
       if response.ok
@@ -22,6 +30,10 @@ UserStore = Reflux.createStore
           @data[userId] = user
           updated.push userId
         @_triggerStateChange(updated)
+      else
+        # Remove the ids from requested if the request failed
+        for id in userIds
+          delete @requested[id]
     )
 
   getUser: (userId) ->
