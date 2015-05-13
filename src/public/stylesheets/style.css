@@ -48,7 +48,7 @@ div.alert {
     flex-direction: row;
 }
 
-.thread-message-list {
+.fork-messages {
     overflow-y: auto;
     overflow-x: hidden;
     align-self: flex-end;

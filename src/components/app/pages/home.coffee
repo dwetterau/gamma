@@ -117,6 +117,7 @@ Home = React.createClass
     messageLists = []
     queue = [@state.threadTrees[threadId]]
     parentToIndex = {}
+    combine = false
     while queue.length
       node = queue.shift()
 
@@ -127,6 +128,11 @@ Home = React.createClass
       # Don't actually add the sentinel node to render.
       if node.id != -1
         index = 0
+
+        # Recognize the case where we need to collapse the first two lists
+        if node.parentId == -1
+          combine = true
+
         if node.parentId of parentToIndex
           index = parentToIndex[node.parentId]
         messageLists[index].push node.id
@@ -139,9 +145,9 @@ Home = React.createClass
         queue.push child
 
     # We need to combine the first two lists here for easier rendering
-    # They are separate because the first sent message as a parentId of undefined
-    # and all others have it correctly set.
-    if messageLists.length > 1
+    # They are separate because the first sent message in a thread has a
+    # parentId of -1 and all others have it correctly set.
+    if messageLists.length > 1 and combine
       firstList = messageLists.shift()
       messageLists[0] = firstList.concat messageLists[0]
 

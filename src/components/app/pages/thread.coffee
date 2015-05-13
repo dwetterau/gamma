@@ -2,6 +2,7 @@ React = require 'react'
 {Paper, TextField, RaisedButton} = require 'material-ui'
 
 ChatBox = require './thread/chat_box'
+Fork = require './thread/fork'
 
 Thread = React.createClass
 
@@ -37,53 +38,26 @@ Thread = React.createClass
   _hasMessage: (messageId) ->
     return messageId of @props.messages
 
-  _renderMessage: (messageId) ->
-    {metadata, data} = @props.messages[messageId]
-    # Don't render fork messages
-    if metadata.type != 0
-      return ''
 
-    username = "Unknown"
-    if metadata.AuthorId of @props.users
-      username = @props.users[metadata.AuthorId].username
-
-    <div key={'mm' + metadata.id}>
-      {username}<span>: </span>{data.value}
-    </div>
-
-  _renderMessages: ->
-    messages = []
-    for messageList in @props.messageLists
-      messages.push []
-      for messageId in messageList
-        # If the message isn't loaded yet, don't keep traversing
-        if not @_hasMessage messageId
-          break
-        messages[messages.length - 1].push @_renderMessage messageId
-
-
-    if messages.length
-      lists = []
-      for messageList, index in messages
-        lists.push (
-          <div key={"li" + index} className="thread-message-list">
-            {messageList}
-          </div>
-        )
-      return lists
-    else
-      return (
-        <div className="thread-message-list">
-          <div>Thread has no messages!</div>
-        </div>
+  _renderForks: ->
+    forks = []
+    for messageList, index in @props.messageLists
+      forkProps = {
+        messages: @props.messages
+        users: @props.users
+        messageList
+      }
+      forks.push (
+        <Fork key={"fid" + index} {...forkProps}/>
       )
+    return forks
 
   render: ->
     threadId = @props.threadId
     <div>
       <div className="col-sm-10 thread-message-list-container">
         <Paper>
-          {@_renderMessages()}
+          {@_renderForks()}
         </Paper>
       </div>
       <div className="col-sm-2">

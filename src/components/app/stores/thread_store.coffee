@@ -29,7 +29,7 @@ ThreadStore = Reflux.createStore
 
     if message.id not of @indices[threadId]
       parentId = if message.ParentId then message.ParentId else -1
-      newNode = new MessageNode message.id, message.ParentId, previousMessageId
+      newNode = new MessageNode message.id, parentId, previousMessageId
       if parentId not of @indices[threadId] and (
           message.id not of @parentIndices[threadId])
         # If we don't have the previous message, add it as a child of the root
