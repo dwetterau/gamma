@@ -2,6 +2,40 @@ React = require 'react'
 
 Fork = React.createClass
 
+  getInitialState: ->
+    return {
+      scrollFixed: true
+    }
+
+  _scrollToBottom: ->
+    node = @getDOMNode()
+    node.scrollTop = node.scrollHeight
+
+  _saveScroll: ->
+    node = @getDOMNode()
+    @scrollHeight = node.scrollHeight;
+    @scrollTop = node.scrollTop
+
+  _scrollToSaved: ->
+    node = @getDOMNode()
+    node.scrollTop = @scrollTop + (node.scrollHeight - @scrollHeight)
+
+  _onScroll: (e) ->
+    node = @getDOMNode()
+    scrollFixed = node.scrollTop == @scrollTop
+    if scrollFixed != @state.scrollFixed
+      @setState {scrollFixed}
+
+  componentDidUpdate: ->
+    # If we are in "fixed" mode, make sure we are still scrolled down
+    if @state.scrollFixed
+      @_scrollToBottom()
+    else
+      @_scrollToSaved()
+
+  componentWillUpdate: ->
+    @_saveScroll()
+
   # Return if we have the message
   _hasMessage: (messageId) ->
     return messageId of @props.messages
@@ -36,7 +70,7 @@ Fork = React.createClass
       return messages
 
   render: ->
-    <div className="fork-messages">
+    <div className="fork-messages" onScroll={@_onScroll}>
       {@_renderMessages()}
     </div>
 
