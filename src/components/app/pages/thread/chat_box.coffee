@@ -8,7 +8,10 @@ ChatBox = React.createClass
     @refs.textField.clearValue()
 
   _onKeyDown: (e) ->
-    if e.which == 13
+    if e.which == 13 and e.shiftKey
+      # On shift enter, let it behave as normal.
+      return true
+    else if e.which == 13
       e.preventDefault()
       e.stopPropagation()
       @_onSend()
