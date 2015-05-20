@@ -1,4 +1,5 @@
 React = require 'react'
+{Paper} = require 'material-ui'
 
 Fork = React.createClass
 
@@ -25,6 +26,9 @@ Fork = React.createClass
     scrollFixed = node.scrollTop == @scrollTop
     if scrollFixed != @state.scrollFixed
       @setState {scrollFixed}
+
+  _selectFork: (e) ->
+    @props.updateCurrentListIndex(@props.index)
 
   componentDidUpdate: ->
     # If we are in "fixed" mode, make sure we are still scrolled down
@@ -70,8 +74,26 @@ Fork = React.createClass
       return messages
 
   render: ->
-    <div className="fork-messages" onScroll={@_onScroll}>
-      {@_renderMessages()}
+    className = "fork-container"
+    if @props.isSelected
+      className += " active-fork"
+
+    <div className={className}>
+      <Paper>
+        <div className="fork-messages" onScroll={@_onScroll}>
+          {@_renderMessages()}
+        </div>
+      </Paper>
+      {
+        if @props.isSelected
+          (<div className="active-fork-text">
+            Active Fork
+          </div>)
+        else
+          (<div className="inactive-fork-text" onClick={@_selectFork}>
+            Select as Active Fork
+          </div>)
+      }
     </div>
 
 module.exports = Fork

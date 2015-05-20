@@ -1,5 +1,5 @@
 React = require 'react'
-{Paper, TextField, RaisedButton} = require 'material-ui'
+{TextField, RaisedButton} = require 'material-ui'
 
 ChatBox = require './thread/chat_box'
 Fork = require './thread/fork'
@@ -30,9 +30,8 @@ Thread = React.createClass
       parentId = getParentId @state.currentListIndex
       @props.sendMessage @props.threadId, content, 0, parentId
 
-  _onCurrentListIndexUpdate: ->
-    currentListIndex = parseInt @refs.currentListIndexTextField.getValue(), 10
-    @setState {currentListIndex}
+  _onCurrentListIndexUpdate: (index) ->
+    @setState {currentListIndex: index}
 
   # Return if we have the message
   _hasMessage: (messageId) ->
@@ -42,10 +41,14 @@ Thread = React.createClass
   _renderForks: ->
     forks = []
     for messageList, index in @props.messageLists
+      isSelected = index == @state.currentListIndex
       forkProps = {
         messages: @props.messages
         users: @props.users
         messageList
+        isSelected
+        index
+        updateCurrentListIndex: @_onCurrentListIndexUpdate
       }
       forks.push (
         <Fork key={"fid" + index} {...forkProps}/>
@@ -56,14 +59,7 @@ Thread = React.createClass
     threadId = @props.threadId
     <div>
       <div className="col-sm-10 thread-message-list-container">
-        <Paper>
-          {@_renderForks()}
-        </Paper>
-      </div>
-      <div className="col-sm-2">
-        <TextField ref="currentListIndexTextField" defaultValue="0"
-          hintText="Current List Index"/>
-        <RaisedButton label="Update" onClick={@_onCurrentListIndexUpdate} />
+        {@_renderForks()}
       </div>
       <div className="col-sm-offset-2 col-sm-10 chat-box">
         <ChatBox onSend={@_onSend} />

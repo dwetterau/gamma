@@ -42,10 +42,18 @@ div.alert {
     padding-top: 20px;
 }
 
+.col-sm-10.thread-message-list-container {
+  display: flex;
+  height: 600px;
+  flex-direction: row;
+  justify-content: space-between;
+  margin-top: 2em;
+}
+
 .thread-message-list-container .mui-paper .mui-paper-container {
     height: 600px;
+    width: 400px;
     display: flex;
-    flex-direction: row;
 }
 
 .fork-messages {
@@ -56,12 +64,34 @@ div.alert {
     max-height: 600px;
 }
 
+.fork-container.active-fork .mui-paper.mui-rounded {
+    box-shadow: 0 0 0 1px #00bcd4;
+}
+
+.active-fork-text {
+    text-align: center;
+    color: #FFF;
+    background-color: #00bcd4;
+    border-radius: 0 0 2px 2px;
+    box-shadow: 0 0 0 1px #00bcd4;
+}
+
+.inactive-fork-text {
+    text-align: center;
+    cursor: pointer;
+    color: #00bcd4;
+}
+
 .thread-name {
   cursor: pointer;
 }
 
 .thread-name.updated {
     font-weight: 900;
+}
+
+.chat-box {
+    margin-top: 3em;
 }
 
 .chat-box-row {
