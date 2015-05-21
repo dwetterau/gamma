@@ -2,6 +2,7 @@ express = require 'express'
 router = express.Router()
 passport_config  = require('../lib/auth')
 
+contact_controller = require '../controllers/contact_controller'
 cursor_controller = require '../controllers/cursor_controller'
 index_controller = require '../controllers/index_controller'
 message_controller = require '../controllers/message_controller'
@@ -39,6 +40,9 @@ router.get '/api/notifications', auth, notification_controller.get_listen_notifi
 
 # User api routes
 router.get '/api/users', auth, user_controller.get_users
+
+# Contact api routes
+router.post '/api/contacts/group/create', auth, contact_controller.post_create_group
 
 # Start the notification server
 notification_controller.startNotificationServer()

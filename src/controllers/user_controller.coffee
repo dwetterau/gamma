@@ -22,7 +22,9 @@ exports.post_user_create = (req, res) ->
     if err?
       return fail "Unable to create account at this time"
     else
-      new_user.save().then ->
+      new_user.save().then (user) ->
+        return models.Contact.create(UserId: user.id)
+      .then ->
         req.logIn new_user, (err) ->
           res.send {ok: true, body: {user: new_user.toJSON(), redirect_url: '/'}}
       .catch (error) ->
