@@ -5,10 +5,10 @@ module.exports = (sequelize, DataTypes) ->
     username:
       type: DataTypes.STRING
       unique: true
-      validate: {notNull: true}
+      allowNull: false
     password:
       type: DataTypes.STRING
-      validate: {notNull: true}
+      allowNull: false
   , classMethods:
     associate: (models) ->
       User.hasMany(models.Message)
