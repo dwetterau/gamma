@@ -1,8 +1,16 @@
+.site{
+  display: flex;
+  min-height: 100vh;
+  flex-direction: column;
+}
+
+.site-content {
+  display: flex;
+  flex: 1;
+}
+
 .footer {
-    position: absolute;
-    bottom: 0;
-    width: 100%;
-    line-height: 45px;
+  display: flex;
 }
 
 div.alert-container {

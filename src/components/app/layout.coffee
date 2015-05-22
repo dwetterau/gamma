@@ -15,17 +15,20 @@ Layout = React.createClass
     title = 'Gamma'
 
     return (
-      <AppCanvas predefinedLayout={1}>
-        <AppBar
-          className="mui-dark-theme"
-          onMenuIconButtonTouchTap={@_onMenuIconButtonTouchTap}
-          title={title}
-          zDepth={0} />
+      <div className="site">
+        <AppCanvas className="site-content" predefinedLayout={1}>
+          <AppBar
+            className="mui-dark-theme"
+            onMenuIconButtonTouchTap={@_onMenuIconButtonTouchTap}
+            title={title}
+            zDepth={0} />
 
-        <LeftNavigation ref="leftNavigation" />
+          <LeftNavigation ref="leftNavigation" />
 
         <RouteHandler {...@props}/>
 
+
+        </AppCanvas>
         <div className="footer mui-dark-theme">
           <div className="container text-center">
             <p className="pull-left">Made By David Wetterau</p>
@@ -35,7 +38,7 @@ Layout = React.createClass
             </ul>
           </div>
         </div>
-      </AppCanvas>
+      </div>
     )
 
 module.exports = Layout
