@@ -1,16 +1,16 @@
-.site{
-  display: flex;
-  min-height: 100vh;
-  flex-direction: column;
+.site {
+    display: flex;
+    min-height: 100vh;
+    flex-direction: column;
 }
 
 .site-content {
-  display: flex;
-  flex: 1;
+    display: flex;
+    flex: 1;
 }
 
 .footer {
-  display: flex;
+    display: flex;
 }
 
 div.alert-container {
